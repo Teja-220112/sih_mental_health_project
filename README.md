@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AI-Powered Dynamic Mental Health Monitoring and Distress Prediction System
 
 **Smart India Hackathon Problem Statement PS ID: 26094**  
@@ -159,3 +160,6 @@ npm run dev
 
 ## 🛡️ License & Compliance
 Designed for the **Ministry of Social Justice and Empowerment (MoSJE)** under Smart India Hackathon guidelines.
+=======
+# sih_mental_health
+>>>>>>> 6fa4a697791bd5519499b71bbcc3d985eee129d7
