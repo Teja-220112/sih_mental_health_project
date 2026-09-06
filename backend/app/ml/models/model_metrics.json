@@ -1,0 +1,61 @@
+{
+  "best_model_name": "RandomForest",
+  "dataset_size": 200,
+  "dataset_type": "synthetic",
+  "features": [
+    "current_structured_distress",
+    "previous_distress_score",
+    "distress_change",
+    "sentiment_score",
+    "fear_nlp_score",
+    "anxiety_nlp_score",
+    "sleep_score",
+    "safety_score",
+    "threat_score",
+    "case_risk_score",
+    "days_since_complaint",
+    "case_delay_indicator",
+    "number_of_hearings",
+    "recent_threat_count",
+    "engagement_change",
+    "age_group",
+    "case_stage"
+  ],
+  "models_evaluated": {
+    "LogisticRegression": {
+      "accuracy": 0.94,
+      "precision": 0.9,
+      "recall": 0.9474,
+      "f1_score": 0.9231,
+      "roc_auc": 0.9949,
+      "confusion_matrix": [
+        [
+          29,
+          2
+        ],
+        [
+          1,
+          18
+        ]
+      ]
+    },
+    "RandomForest": {
+      "accuracy": 0.96,
+      "precision": 0.9048,
+      "recall": 1.0,
+      "f1_score": 0.95,
+      "roc_auc": 0.9932,
+      "confusion_matrix": [
+        [
+          29,
+          2
+        ],
+        [
+          0,
+          19
+        ]
+      ]
+    }
+  },
+  "disclaimer": "Performance shown here is based on synthetic demonstration data and must not be interpreted as clinical validation."
+}
