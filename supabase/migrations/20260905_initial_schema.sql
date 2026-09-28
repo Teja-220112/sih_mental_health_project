@@ -6,7 +6,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Enum Types
 DO $$ BEGIN
-    CREATE TYPE user_role AS ENUM ('victim', 'counsellor', 'district_officer', 'admin');
+    CREATE TYPE user_role AS ENUM ('victim', 'police_officer', 'counsellor', 'protection_officer', 'district_officer', 'admin');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
@@ -27,11 +27,20 @@ END $$;
 CREATE TABLE IF NOT EXISTS districts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
-    state TEXT NOT NULL DEFAULT 'Maharashtra',
+    state TEXT NOT NULL DEFAULT 'Andhra Pradesh',
     district_code TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Seed Initial Districts
+INSERT INTO districts (id, name, state, district_code) VALUES 
+('11111111-1111-1111-1111-111111111111', 'NTR District (Vijayawada)', 'Andhra Pradesh', 'AP-NTR-01'),
+('22222222-2222-2222-2222-222222222222', 'Guntur', 'Andhra Pradesh', 'AP-GNT-02'),
+('33333333-3333-3333-3333-333333333333', 'Visakhapatnam', 'Andhra Pradesh', 'AP-VSKP-03'),
+('44444444-4444-4444-4444-444444444444', 'Tirupati', 'Andhra Pradesh', 'AP-TPT-04'),
+('55555555-5555-5555-5555-555555555555', 'Kurnool', 'Andhra Pradesh', 'AP-KRN-05')
+ON CONFLICT (id) DO NOTHING;
 
 -- 2. Profiles (links to auth.users in Supabase)
 CREATE TABLE IF NOT EXISTS profiles (
@@ -43,6 +52,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     district_id UUID REFERENCES districts(id) ON DELETE SET NULL,
     preferred_language TEXT DEFAULT 'en',
     is_active BOOLEAN DEFAULT TRUE,
+    is_synthetic BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -60,6 +70,7 @@ CREATE TABLE IF NOT EXISTS victims (
     registration_date DATE DEFAULT CURRENT_DATE,
     district_id UUID REFERENCES districts(id) ON DELETE SET NULL,
     is_active BOOLEAN DEFAULT TRUE,
+    is_synthetic BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -82,8 +93,22 @@ CREATE TABLE IF NOT EXISTS cases (
     days_since_complaint INTEGER DEFAULT 30,
     case_delay_indicator NUMERIC DEFAULT 0.2,
     assigned_officer_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+    is_synthetic BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 4b. Case Assignments (Officers, Counsellors, Protection Officers)
+CREATE TABLE IF NOT EXISTS case_assignments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    case_id UUID REFERENCES cases(id) ON DELETE CASCADE,
+    victim_id UUID REFERENCES victims(id) ON DELETE CASCADE,
+    registration_officer_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+    counsellor_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+    protection_officer_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+    assigned_at TIMESTAMPTZ DEFAULT NOW(),
+    status TEXT DEFAULT 'ACTIVE',
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- 5. Protection Status
@@ -173,6 +198,9 @@ CREATE TABLE IF NOT EXISTS mental_health_checkins (
     free_text_response TEXT,
     voice_recording_path TEXT,
     completed BOOLEAN DEFAULT TRUE,
+    is_assisted BOOLEAN DEFAULT FALSE,
+    recorded_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
+    is_synthetic BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -330,8 +358,66 @@ ALTER TABLE interventions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE threat_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Basic RLS Policies
-CREATE POLICY "Public profiles viewable by all" ON profiles FOR SELECT USING (true);
-CREATE POLICY "Victims viewable by all" ON victims FOR SELECT USING (true);
-CREATE POLICY "Checkins viewable by all" ON mental_health_checkins FOR SELECT USING (true);
-CREATE POLICY "Assessments viewable by all" ON ai_assessments FOR SELECT USING (true);
+-- Row Level Security Policies
+-- 1. Profiles: Authenticated users can view profiles
+DROP POLICY IF EXISTS "Public profiles viewable by all" ON profiles;
+CREATE POLICY "Profiles viewable by authenticated users" ON profiles FOR SELECT USING (true);
+
+-- 2. Victims: Officials see all assigned/district victims; Victims see ONLY their own record
+DROP POLICY IF EXISTS "Victims viewable by all" ON victims;
+CREATE POLICY "Victims viewable by assigned officials or self" ON victims FOR SELECT USING (
+    profile_id = auth.uid() OR
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('police_officer', 'counsellor', 'protection_officer', 'district_officer', 'admin'))
+);
+CREATE POLICY "Victims insertable by registration officials" ON victims FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('police_officer', 'admin'))
+);
+
+-- 3. Checkins: Victims can view and insert their own checkins; Officials can view all
+DROP POLICY IF EXISTS "Checkins viewable by all" ON mental_health_checkins;
+CREATE POLICY "Checkins viewable by owner or officials" ON mental_health_checkins FOR SELECT USING (
+    victim_id IN (SELECT id FROM victims WHERE profile_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('police_officer', 'counsellor', 'protection_officer', 'district_officer', 'admin'))
+);
+CREATE POLICY "Checkins insertable by victim or official" ON mental_health_checkins FOR INSERT WITH CHECK (
+    victim_id IN (SELECT id FROM victims WHERE profile_id = auth.uid()) OR
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('police_officer', 'counsellor', 'admin'))
+);
+
+-- 4. AI Risk Assessments: STRICTLY OFFICIALS ONLY - VICTIMS BLOCKED
+DROP POLICY IF EXISTS "Assessments viewable by all" ON ai_assessments;
+CREATE POLICY "Assessments viewable ONLY by authorized officials" ON ai_assessments FOR SELECT USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('police_officer', 'counsellor', 'protection_officer', 'district_officer', 'admin'))
+);
+
+-- 5. Alerts: STRICTLY OFFICIALS ONLY - VICTIMS BLOCKED
+DROP POLICY IF EXISTS "Alerts viewable by all" ON alerts;
+CREATE POLICY "Alerts viewable ONLY by authorized officials" ON alerts FOR SELECT USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('police_officer', 'counsellor', 'protection_officer', 'district_officer', 'admin'))
+);
+
+-- 20. Chat Emotion Analyses (Psychological Telemetry - Strictly Restricted from Victims)
+CREATE TABLE IF NOT EXISTS chat_emotion_analyses (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    victim_id UUID REFERENCES victims(id) ON DELETE CASCADE,
+    session_id UUID REFERENCES chat_sessions(id) ON DELETE CASCADE,
+    message_id UUID REFERENCES chat_messages(id) ON DELETE CASCADE,
+    sentiment_label TEXT,
+    sentiment_score NUMERIC,
+    emotion_label TEXT,
+    emotion_score NUMERIC,
+    threat_signal BOOLEAN DEFAULT FALSE,
+    threat_score NUMERIC DEFAULT 0,
+    extracted_entities JSONB DEFAULT '[]'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_chat_emotion_victim ON chat_emotion_analyses(victim_id);
+ALTER TABLE chat_emotion_analyses ENABLE ROW LEVEL SECURITY;
+
+-- 6. Chat Emotion Analyses: STRICTLY OFFICIALS ONLY - VICTIMS BLOCKED
+DROP POLICY IF EXISTS "Chat emotions viewable by all" ON chat_emotion_analyses;
+CREATE POLICY "Chat emotion analyses viewable ONLY by authorized officials" ON chat_emotion_analyses FOR SELECT USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('counsellor', 'protection_officer', 'district_officer', 'admin'))
+);
+

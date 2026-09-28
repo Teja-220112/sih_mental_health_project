@@ -30,8 +30,10 @@ def create_checkin(req: CheckinCreateRequest):
     assessment = db_service.add_checkin(req.victim_id, req.dict())
     return {
         'status': 'success',
-        'message': 'Check-in processed successfully. High-risk cases are automatically escalated for human review.',
-        'assessment': assessment
+        'message': 'Your check-in has been securely recorded. Our support coordinators and protection officers are actively monitoring your safety.',
+        'checkin_id': assessment.get('checkin_id'),
+        'submitted_at': assessment.get('assessment_time'),
+        'guidance': 'If you feel unsafe or require urgent assistance at any time, please call emergency services at 112 or your assigned protection officer.'
     }
 
 @router.get("/{victim_id}")

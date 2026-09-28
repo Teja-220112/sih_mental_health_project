@@ -24,11 +24,11 @@ export const AdminDashboard: React.FC = () => {
             intervention_completion_rate: 94.2
           },
           district_breakdown: [
-            { district_name: 'Pune', victim_count: 42, high_risk_count: 4 },
-            { district_name: 'Nagpur', victim_count: 38, high_risk_count: 3 },
-            { district_name: 'Nashik', victim_count: 28, high_risk_count: 2 },
-            { district_name: 'Thane', victim_count: 26, high_risk_count: 3 },
-            { district_name: 'Chhatrapati Sambhajinagar', victim_count: 22, high_risk_count: 2 },
+            { district_name: 'NTR District (Vijayawada)', victim_count: 100, high_risk_count: 18 },
+            { district_name: 'Guntur', victim_count: 38, high_risk_count: 5 },
+            { district_name: 'Visakhapatnam', victim_count: 32, high_risk_count: 4 },
+            { district_name: 'Tirupati', victim_count: 26, high_risk_count: 3 },
+            { district_name: 'Kurnool', victim_count: 22, high_risk_count: 2 },
           ]
         });
       }
@@ -36,7 +36,7 @@ export const AdminDashboard: React.FC = () => {
     loadData();
   }, []);
 
-  const s = data?.summary || { total_victims: 156, high_risk_count: 14, avg_response_time_hours: 2.4 };
+  const s = data?.summary || { total_victims: 218, high_risk_count: 32, avg_response_time_hours: 2.4 };
   const districts = data?.district_breakdown || [];
 
   return (
@@ -49,7 +49,7 @@ export const AdminDashboard: React.FC = () => {
             <Building2 className="w-4 h-4" />
             <span>State-Level Executive Dashboard</span>
           </div>
-          <h2 className="text-xl font-bold">Maharashtra Atrocity Victim Mental Health Monitoring Portal</h2>
+          <h2 className="text-xl font-bold">Andhra Pradesh Atrocity Victim Mental Health & Protection Portal</h2>
           <p className="text-xs text-slate-300">Department of Social Justice & Empowerment (MoSJE)</p>
         </div>
 

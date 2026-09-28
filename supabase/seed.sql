@@ -3,11 +3,11 @@
 
 -- Districts
 INSERT INTO districts (id, name, state, district_code) VALUES
-('11111111-1111-1111-1111-111111111111', 'Pune', 'Maharashtra', 'MH-PUNE-01'),
-('22222222-2222-2222-2222-222222222222', 'Nagpur', 'Maharashtra', 'MH-NAGP-02'),
-('33333333-3333-3333-3333-333333333333', 'Nashik', 'Maharashtra', 'MH-NASH-03'),
-('44444444-4444-4444-4444-444444444444', 'Thane', 'Maharashtra', 'MH-THAN-04'),
-('55555555-5555-5555-5555-555555555555', 'Chhatrapati Sambhajinagar', 'Maharashtra', 'MH-CSAM-05')
+('11111111-1111-1111-1111-111111111111', 'NTR District (Vijayawada)', 'Andhra Pradesh', 'AP-NTR-01'),
+('22222222-2222-2222-2222-222222222222', 'Guntur', 'Andhra Pradesh', 'AP-GNT-02'),
+('33333333-3333-3333-3333-333333333333', 'Visakhapatnam', 'Andhra Pradesh', 'AP-VSKP-03'),
+('44444444-4444-4444-4444-444444444444', 'Tirupati', 'Andhra Pradesh', 'AP-TPT-04'),
+('55555555-5555-5555-5555-555555555555', 'Kurnool', 'Andhra Pradesh', 'AP-KRN-05')
 ON CONFLICT (id) DO NOTHING;
 
 -- Profiles (Demo accounts)
@@ -15,8 +15,9 @@ INSERT INTO profiles (id, full_name, email, phone, role, district_id, preferred_
 ('10000000-0000-0000-0000-000000000001', 'Sunita Devi (Victim Demo)', 'victim@demo.mosje.gov.in', '+91 9876543210', 'victim', '11111111-1111-1111-1111-111111111111', 'en'),
 ('20000000-0000-0000-0000-000000000002', 'Dr. Ananya Sharma (Counsellor)', 'counsellor@demo.mosje.gov.in', '+91 9876543211', 'counsellor', '11111111-1111-1111-1111-111111111111', 'en'),
 ('30000000-0000-0000-0000-000000000003', 'Rajesh Verma (District Officer)', 'district@demo.mosje.gov.in', '+91 9876543212', 'district_officer', '11111111-1111-1111-1111-111111111111', 'en'),
+('35000000-0000-0000-0000-000000000001', 'Smt. K. Ratna Kumari (Protection Officer)', 'protection@demo.mosje.gov.in', '+91 9876543215', 'protection_officer', '11111111-1111-1111-1111-111111111111', 'en'),
 ('40000000-0000-0000-0000-000000000004', 'System Administrator (MoSJE)', 'admin@demo.mosje.gov.in', '+91 9876543213', 'admin', '11111111-1111-1111-1111-111111111111', 'en'),
-('50000000-0000-0000-0000-000000000005', 'Ramesh Kumar (Victim 2)', 'victim2@demo.mosje.gov.in', '+91 9876543214', 'victim', '22222222-2222-2222-2222-222222222222', 'hi')
+('50000000-0000-0000-0000-000000000005', 'Ramesh Kumar (Victim 2)', 'victim2@demo.mosje.gov.in', '+91 9876543214', 'victim', '22222222-2222-2222-2222-222222222222', 'te')
 ON CONFLICT (id) DO NOTHING;
 
 -- Questionnaires
@@ -40,17 +41,17 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Victims
 INSERT INTO victims (id, profile_id, victim_code, age_group, gender, preferred_language, consent_status, registration_date, district_id) VALUES
-('70000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'VIC-2026-101', '26-35', 'Female', 'en', TRUE, '2026-08-01', '11111111-1111-1111-1111-111111111111'),
-('70000000-0000-0000-0000-000000000002', '50000000-0000-0000-0000-000000000005', 'VIC-2026-102', '36-50', 'Male', 'hi', TRUE, '2026-08-10', '22222222-2222-2222-2222-222222222222')
+('70000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'VIC-DEMO-0001', '26-35', 'Female', 'en', TRUE, '2026-08-01', '11111111-1111-1111-1111-111111111111'),
+('70000000-0000-0000-0000-000000000002', '50000000-0000-0000-0000-000000000005', 'VIC-DEMO-0002', '36-50', 'Male', 'te', TRUE, '2026-08-10', '22222222-2222-2222-2222-222222222222')
 ON CONFLICT (id) DO NOTHING;
 
 -- Cases
 INSERT INTO cases (id, victim_id, case_code, case_type, complaint_date, police_station, district_id, case_stage, investigation_status, court_case_status, days_since_complaint, number_of_hearings) VALUES
-('80000000-0000-0000-0000-000000000001', '70000000-0000-0000-0000-000000000001', 'POA-PUNE-2026-042', 'SC/ST Atrocity & Intimidation', '2026-08-01', 'Haveli Police Station', '11111111-1111-1111-1111-111111111111', 'Court / Trial', 'Charge Sheet Filed', 'Trial Commenced', 35, 3),
-('80000000-0000-0000-0000-000000000002', '70000000-0000-0000-0000-000000000002', 'POA-NAGP-2026-089', 'Land Dispossess Atrocity', '2026-08-10', 'Sadar Police Station', '22222222-2222-2222-2222-222222222222', 'Investigation', 'Under Investigation', 'Pre-Trial', 26, 1)
+('80000000-0000-0000-0000-000000000001', '70000000-0000-0000-0000-000000000001', 'CASE-DEMO-0001', 'SC/ST Atrocity & Intimidation', '2026-08-01', 'Suryaraopet Police Station, Vijayawada', '11111111-1111-1111-1111-111111111111', 'Court / Trial', 'Charge Sheet Filed', 'Trial Commenced', 35, 3),
+('80000000-0000-0000-0000-000000000002', '70000000-0000-0000-0000-000000000002', 'CASE-DEMO-0002', 'Land Dispossess Atrocity', '2026-08-10', 'Arundelpet Police Station, Guntur', '22222222-2222-2222-2222-222222222222', 'Investigation', 'Under Investigation', 'Pre-Trial', 26, 1)
 ON CONFLICT (id) DO NOTHING;
 
--- Longitudinal History for Demo Victim VIC-2026-101
+-- Longitudinal History for Demo Victim VIC-DEMO-0001
 INSERT INTO ai_assessments (id, victim_id, assessment_time, questionnaire_distress_score, sentiment_score, emotion_score, threat_score, dynamic_distress_score, risk_level, predicted_escalation, escalation_probability, explanation) VALUES
 ('90000000-0000-0000-0000-000000000001', '70000000-0000-0000-0000-000000000001', '2026-08-05T10:00:00Z', 35.0, -0.2, 0.3, 10.0, 38.0, 'MODERATE', FALSE, 0.15, '{"top_factors": [{"factor": "Baseline stress from recent filing", "impact": "moderate"}]}'),
 ('90000000-0000-0000-0000-000000000002', '70000000-0000-0000-0000-000000000001', '2026-08-09T10:00:00Z', 42.0, -0.4, 0.45, 20.0, 45.0, 'MODERATE', FALSE, 0.28, '{"top_factors": [{"factor": "Court date approaching", "impact": "moderate"}]}'),
@@ -63,7 +64,7 @@ INSERT INTO ai_assessments (id, victim_id, assessment_time, questionnaire_distre
 
 -- Active Alerts
 INSERT INTO alerts (id, victim_id, assessment_id, alert_type, severity, message, assigned_to, status, created_at) VALUES
-('a0000000-0000-0000-0000-000000000001', '70000000-0000-0000-0000-000000000001', '90000000-0000-0000-0000-000000000005', 'CRITICAL_DISTRESS_ESCALATION', 'CRITICAL', 'Victim VIC-2026-101 distress score peaked at 82/100 following threat report. Urgent protection and counselling review required.', '20000000-0000-0000-0000-000000000002', 'IN_PROGRESS', '2026-08-20T10:05:00Z')
+('a0000000-0000-0000-0000-000000000001', '70000000-0000-0000-0000-000000000001', '90000000-0000-0000-0000-000000000005', 'CRITICAL_DISTRESS_ESCALATION', 'CRITICAL', 'Victim VIC-DEMO-0001 distress score peaked at 82/100 following threat report. Urgent protection and counselling review required.', '20000000-0000-0000-0000-000000000002', 'IN_PROGRESS', '2026-08-20T10:05:00Z')
 ON CONFLICT (id) DO NOTHING;
 
 -- Recorded Interventions

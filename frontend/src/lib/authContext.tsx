@@ -7,7 +7,7 @@ interface AuthContextType {
   victim: VictimProfile | null;
   role: UserRole;
   isLoading: boolean;
-  switchRole: (newRole: UserRole) => Promise<void>;
+  loginWithCredentials: (identifier: string, password?: string, expectedRole?: UserRole) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
 }
 
@@ -19,57 +19,91 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [victim, setVictim] = useState<VictimProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const loadRoleProfile = async (targetRole: UserRole) => {
+  // Validate existing session on mount — DO NOT auto-login as any demo user
+  useEffect(() => {
+    const checkSession = async () => {
+      const saved = localStorage.getItem('sih_portal_session');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.user && parsed.role) {
+            const meRes = await api.getCurrentUser(parsed.role);
+            if (meRes && meRes.user) {
+              setUser(meRes.user);
+              setVictim(meRes.victim || null);
+              setRole(meRes.user.role);
+              setIsLoading(false);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn("Session restore error:", e);
+          localStorage.removeItem('sih_portal_session');
+        }
+      }
+      // If no valid session, remain strictly unauthenticated
+      setUser(null);
+      setVictim(null);
+      setIsLoading(false);
+    };
+    checkSession();
+  }, []);
+
+  const loginWithCredentials = async (
+    identifier: string, 
+    password?: string, 
+    expectedRole?: UserRole
+  ): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
     try {
-      const res = await api.demoLogin(targetRole);
+      const res = await api.login({ identifier, password, role: expectedRole });
       if (res && res.user) {
+        const authenticatedRole = res.user.role as UserRole;
+
+        // Strict role validation against database-backed authorized profile
+        if (expectedRole && expectedRole !== authenticatedRole) {
+          const isDistrictOrAdmin = 
+            (expectedRole === 'district_officer' && authenticatedRole === 'admin') ||
+            (expectedRole === 'admin' && authenticatedRole === 'district_officer');
+            
+          if (!isDistrictOrAdmin) {
+            return {
+              success: false,
+              error: `Access Denied: Your account role is "${authenticatedRole.replace('_', ' ')}", which is not authorized for the ${expectedRole.replace('_', ' ')} portal.`
+            };
+          }
+        }
+
         setUser(res.user);
         setVictim(res.victim || null);
-        setRole(res.user.role);
+        setRole(authenticatedRole);
+
+        // Store persistent session
+        localStorage.setItem('sih_portal_session', JSON.stringify({
+          user: res.user,
+          victim: res.victim,
+          role: authenticatedRole,
+          token: res.token
+        }));
+
+        return { success: true };
       }
-    } catch (e) {
-      console.warn("Failed to load demo profile from API, using client fallback:", e);
-      // Client Fallback profiles with valid Hex UUIDs
-      const fallbackProfiles: Record<UserRole, UserProfile> = {
-        victim: { id: '10000000-0000-0000-0000-000000000001', full_name: 'Sunita Devi (Victim Demo)', email: 'victim@demo.mosje.gov.in', role: 'victim' },
-        counsellor: { id: '20000000-0000-0000-0000-000000000002', full_name: 'Dr. Ananya Sharma (Counsellor)', email: 'counsellor@demo.mosje.gov.in', role: 'counsellor' },
-        district_officer: { id: '30000000-0000-0000-0000-000000000003', full_name: 'Rajesh Verma (District Officer)', email: 'district@demo.mosje.gov.in', role: 'district_officer' },
-        admin: { id: '40000000-0000-0000-0000-000000000004', full_name: 'System Administrator (MoSJE)', email: 'admin@demo.mosje.gov.in', role: 'admin' },
-      };
-      setUser(fallbackProfiles[targetRole]);
-      setRole(targetRole);
-      if (targetRole === 'victim') {
-        setVictim({
-          id: '70000000-0000-0000-0000-000000000001',
-          victim_code: 'VIC-2026-101',
-          name: 'Sunita Devi',
-          age_group: '26-35',
-          gender: 'Female'
-        });
-      } else {
-        setVictim(null);
-      }
+      return { success: false, error: 'Authentication failed. Please check your credentials.' };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Invalid login identifier or password.' };
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadRoleProfile('victim');
-  }, []);
-
-  const switchRole = async (newRole: UserRole) => {
-    await loadRoleProfile(newRole);
-  };
-
   const logout = () => {
+    localStorage.removeItem('sih_portal_session');
     setUser(null);
     setVictim(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, victim, role, isLoading, switchRole, logout }}>
+    <AuthContext.Provider value={{ user, victim, role, isLoading, loginWithCredentials, logout }}>
       {children}
     </AuthContext.Provider>
   );

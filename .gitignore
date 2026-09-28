@@ -45,3 +45,7 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+
+# Developer Credential Exports (Restricted)
+scripts/synthetic_victim_credentials.csv
+*.credentials.csv

@@ -13,15 +13,15 @@ export const DistrictDashboard: React.FC = () => {
       } catch (e) {
         console.warn("API failed, using fallback:", e);
         setData({
-          district_info: { name: 'Pune', state: 'Maharashtra', district_code: 'MH-PUNE-01' },
+          district_info: { name: 'NTR District (Vijayawada)', state: 'Andhra Pradesh', district_code: 'AP-NTR-01' },
           metrics: {
-            total_active_cases: 32,
-            monitored_victims: 30,
-            high_risk_victims: 4,
-            active_threat_reports: 2,
-            protection_requests_pending: 1,
-            rehabilitation_pending: 2,
-            compensation_pending: 1
+            total_active_cases: 100,
+            monitored_victims: 100,
+            high_risk_victims: 18,
+            active_threat_reports: 5,
+            protection_requests_pending: 3,
+            rehabilitation_pending: 4,
+            compensation_pending: 2
           }
         });
       }
@@ -29,7 +29,7 @@ export const DistrictDashboard: React.FC = () => {
     loadData();
   }, []);
 
-  const m = data?.metrics || { total_active_cases: 32, monitored_victims: 30, high_risk_victims: 4 };
+  const m = data?.metrics || { total_active_cases: 100, monitored_victims: 100, high_risk_victims: 18 };
 
   return (
     <div className="space-y-6">
@@ -41,12 +41,12 @@ export const DistrictDashboard: React.FC = () => {
             <Building2 className="w-4 h-4" />
             <span>District Administrative Portal</span>
           </div>
-          <h2 className="text-xl font-bold text-slate-900">Pune District Protection & Welfare Coordination</h2>
-          <p className="text-xs text-slate-500">Officer Rajesh Verma — District Magistrate / Protection Coordination Office</p>
+          <h2 className="text-xl font-bold text-slate-900">NTR District Protection & Welfare Coordination</h2>
+          <p className="text-xs text-slate-500">Officer Rajesh Verma — District Magistrate / Protection Coordination Office (Vijayawada)</p>
         </div>
 
         <span className="text-xs font-mono bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200">
-          MH-PUNE-01 • Maharashtra
+          AP-NTR-01 • Andhra Pradesh
         </span>
       </div>
 

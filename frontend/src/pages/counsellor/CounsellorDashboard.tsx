@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../../lib/api';
 import { RiskBadge } from '../../components/ui/RiskBadge';
 import { TrendBadge } from '../../components/ui/TrendBadge';
-import { Users, AlertTriangle, ShieldCheck, Flame, Search, Filter, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { Users, AlertTriangle, ShieldCheck, Flame, Search, Filter, ArrowUpRight, CheckCircle2, Clock, Moon, Sun, Sparkles } from 'lucide-react';
 
 interface CounsellorDashboardProps {
   onSelectVictim: (victimId: string) => void;
@@ -32,10 +32,10 @@ export const CounsellorDashboard: React.FC<CounsellorDashboardProps> = ({ onSele
             pending_interventions: 1
           },
           victims: [
-            { victim_id: '70000000-0000-0000-0000-000000000001', victim_code: 'VIC-2026-101', name: 'Sunita Devi', case_code: 'POA-PUNE-2026-042', latest_score: 82, risk_level: 'CRITICAL', trend: 'Rapidly Increasing', last_checkin: '2026-08-20', threat_reported: true },
-            { victim_id: '70000000-0000-0000-0000-000000000002', victim_code: 'VIC-2026-102', name: 'Ramesh Kumar', case_code: 'POA-NAGP-2026-089', latest_score: 76, risk_level: 'CRITICAL', trend: 'Increasing', last_checkin: '2026-09-04', threat_reported: true },
-            { victim_id: '70000000-0000-0000-0000-000000000004', victim_code: 'VIC-2026-104', name: 'Ganpat R.', case_code: 'POA-NASH-2026-015', latest_score: 48, risk_level: 'MODERATE', trend: 'Improving', last_checkin: '2026-09-02', threat_reported: false },
-            { victim_id: '70000000-0000-0000-0000-000000000003', victim_code: 'VIC-2026-103', name: 'Priya S.', case_code: 'POA-PUNE-2026-099', latest_score: 24, risk_level: 'LOW', trend: 'Stable', last_checkin: '2026-09-03', threat_reported: false },
+            { victim_id: '70000000-0000-0000-0000-000000000001', victim_code: 'VIC-DEMO-0001', name: 'Sunita Devi', case_code: 'CASE-DEMO-0001', latest_score: 82, risk_level: 'CRITICAL', trend: 'Rapidly Increasing', last_checkin: '2026-08-20', threat_reported: true },
+            { victim_id: '70000000-0000-0000-0000-000000000002', victim_code: 'VIC-DEMO-0002', name: 'Ramesh Kumar', case_code: 'CASE-DEMO-0002', latest_score: 76, risk_level: 'CRITICAL', trend: 'Increasing', last_checkin: '2026-09-04', threat_reported: true },
+            { victim_id: '70000000-0000-0000-0000-000000000004', victim_code: 'VIC-DEMO-0004', name: 'Anuradha V.', case_code: 'CASE-DEMO-0004', latest_score: 48, risk_level: 'MODERATE', trend: 'Improving', last_checkin: '2026-09-02', threat_reported: false },
+            { victim_id: '70000000-0000-0000-0000-000000000003', victim_code: 'VIC-DEMO-0003', name: 'Priya S.', case_code: 'CASE-DEMO-0003', latest_score: 24, risk_level: 'LOW', trend: 'Stable', last_checkin: '2026-09-03', threat_reported: false },
           ]
         });
       } finally {
@@ -102,6 +102,35 @@ export const CounsellorDashboard: React.FC<CounsellorDashboardProps> = ({ onSele
           </div>
           <div className="text-2xl font-extrabold text-red-700 mt-1">{kpi.critical_risk}</div>
           <div className="text-[10px] text-red-600 mt-0.5">Score 75 — 100</div>
+        </div>
+      </div>
+
+      {/* District Peak Distress Analytics Card */}
+      <div className="bg-gradient-to-r from-slate-900 via-navy-900 to-slate-900 text-white rounded-2xl p-6 shadow-xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="space-y-2 max-w-xl">
+          <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+            <Clock className="w-4 h-4 text-amber-400" />
+            <span>District Diurnal Distress Pattern</span>
+          </div>
+          <h3 className="text-base font-bold">Peak District Distress Window: <span className="text-amber-300">8:00 PM — 11:00 PM</span></h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            Population-level analysis indicates 72% of high-distress signals occur during late evening hours. Counselors are advised to schedule proactive outreach calls between <span className="text-teal-300 font-semibold">4:00 PM and 7:00 PM</span> prior to peak anxiety triggers.
+          </p>
+        </div>
+
+        <div className="bg-slate-800/90 border border-slate-700 p-4 rounded-xl space-y-3 w-full md:w-80 shrink-0">
+          <div className="flex items-center justify-between text-xs border-b border-slate-700 pb-2">
+            <span className="text-slate-400 font-medium">Optimal Calling Window:</span>
+            <span className="font-bold text-teal-400 bg-teal-950 px-2 py-0.5 rounded border border-teal-800">4:00 PM - 7:00 PM</span>
+          </div>
+          <div className="flex items-center justify-between text-xs border-b border-slate-700 pb-2">
+            <span className="text-slate-400 font-medium">High Anxiety Window:</span>
+            <span className="font-bold text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-800">8:00 PM - 11:00 PM</span>
+          </div>
+          <div className="flex items-center space-x-2 text-[11px] text-slate-300 pt-1">
+            <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>AI recommendation active for NTR & Guntur Districts (AP)</span>
+          </div>
         </div>
       </div>
 

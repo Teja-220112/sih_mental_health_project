@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = '/api/v1';
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   try {
@@ -22,8 +22,15 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
 
 export const api = {
   // Auth
+  login: (credentials: { identifier?: string; email?: string; password?: string; role?: string }) =>
+    fetchApi('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }),
   demoLogin: (role: string) => fetchApi('/auth/demo-login', { method: 'POST', body: JSON.stringify({ role }) }),
   getCurrentUser: (role: string) => fetchApi(`/auth/me?role=${role}`),
+
+  // Officials Workflow (Police / Registration / Assisted Entry)
+  registerVictim: (payload: any) => fetchApi('/officials/register-victim', { method: 'POST', body: JSON.stringify(payload) }),
+  submitAssistedCheckin: (payload: any) => fetchApi('/officials/assisted-checkin', { method: 'POST', body: JSON.stringify(payload) }),
+  getOfficialCases: () => fetchApi('/officials/cases'),
 
   // Checkins
   submitCheckin: (payload: any) => fetchApi('/checkins', { method: 'POST', body: JSON.stringify(payload) }),
@@ -53,8 +60,12 @@ export const api = {
   getCases: () => fetchApi('/cases'),
 
   // Dashboard & ML
+  getPoliceDashboard: () => fetchApi('/dashboard/police'),
   getCounsellorDashboard: () => fetchApi('/dashboard/counsellor'),
+  getProtectionDashboard: () => fetchApi('/dashboard/protection'),
   getDistrictDashboard: () => fetchApi('/dashboard/district'),
   getAdminDashboard: () => fetchApi('/dashboard/admin'),
   getMLMetrics: () => fetchApi('/ml/metrics'),
+  get: (endpoint: string) => fetchApi(endpoint),
+  post: (endpoint: string, body?: any) => fetchApi(endpoint, { method: 'POST', body: body ? JSON.stringify(body) : undefined }),
 };

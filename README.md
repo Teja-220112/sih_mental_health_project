@@ -129,10 +129,11 @@ npm run dev
 
 | Role | Email Placeholder | Password | Description |
 |---|---|---|---|
-| **Victim** | `victim@demo.mosje.gov.in` | `demo123` | Sunita Devi (VIC-2026-101) — Escalating & Recovering Demo |
-| **Counsellor** | `counsellor@demo.mosje.gov.in` | `demo123` | Dr. Ananya Sharma — Assigned Counsellor |
-| **District Officer** | `district@demo.mosje.gov.in` | `demo123` | Rajesh Verma — Pune District Officer |
-| **Admin** | `admin@demo.mosje.gov.in` | `demo123` | MoSJE System Administrator |
+| **Victim** | `victim@demo.mosje.gov.in` | `demo123` | Sunita Devi (VIC-DEMO-0001 / CASE-DEMO-0001) — NTR District |
+| **Counsellor** | `counsellor@demo.mosje.gov.in` | `demo123` | Dr. Ananya Sharma — Assigned Senior Counsellor |
+| **Protection Officer** | `protection@demo.mosje.gov.in` | `demo123` | Smt. K. Ratna Kumari — NTR District Protection Officer |
+| **District Officer** | `district@demo.mosje.gov.in` | `demo123` | Rajesh Verma — NTR District Magistrate / Admin |
+| **Admin** | `admin@demo.mosje.gov.in` | `demo123` | MoSJE State Administrator |
 
 ---
 

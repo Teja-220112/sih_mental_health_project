@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './lib/authContext';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { DisclaimerBanner } from './components/layout/DisclaimerBanner';
+import { VoiceAssistantModal } from './components/ui/VoiceAssistantModal';
 import { Login } from './pages/Login';
 
 import { VictimDashboard } from './pages/victim/VictimDashboard';
@@ -11,6 +12,8 @@ import { VictimChat } from './pages/victim/VictimChat';
 import { CounsellorDashboard } from './pages/counsellor/CounsellorDashboard';
 import { VictimDetail } from './pages/counsellor/VictimDetail';
 import { DistrictDashboard } from './pages/district/DistrictDashboard';
+import { ProtectionDashboard } from './pages/protection/ProtectionDashboard';
+import { PoliceDashboard } from './pages/police/PoliceDashboard';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { MLMonitoring } from './pages/admin/MLMonitoring';
 import { AuditLogs } from './pages/admin/AuditLogs';
@@ -20,6 +23,7 @@ const MainContent: React.FC = () => {
   const { user, role } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [selectedVictimId, setSelectedVictimId] = useState<string | null>(null);
+  const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState<boolean>(false);
 
   if (!user) {
     return <Login />;
@@ -32,7 +36,7 @@ const MainContent: React.FC = () => {
         return (
           <CheckinWizard
             onComplete={(res) => {
-              alert(`Check-in completed! Dynamic Distress Score: ${res.dynamic_distress_score}/100 (${res.risk_level})`);
+              alert("Your wellbeing check-in has been securely recorded. Our support coordinators and protection officers are actively monitoring your safety.");
               setActiveTab('dashboard');
             }}
             onCancel={() => setActiveTab('dashboard')}
@@ -122,6 +126,14 @@ const MainContent: React.FC = () => {
     return <DistrictDashboard />;
   };
 
+  const renderProtectionPage = () => {
+    return <ProtectionDashboard />;
+  };
+
+  const renderPolicePage = () => {
+    return <PoliceDashboard />;
+  };
+
   const renderAdminPage = () => {
     switch (activeTab) {
       case 'ml_metrics':
@@ -136,19 +148,31 @@ const MainContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      <DisclaimerBanner />
-      <Navbar />
+      <div className="sticky top-0 z-50 bg-slate-900 shadow-md">
+        <DisclaimerBanner />
+        <Navbar
+          onQuickCheckin={() => setActiveTab('checkin')}
+          onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
+        />
+      </div>
 
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
         <Sidebar activeTab={activeTab} setActiveTab={(tab) => { setSelectedVictimId(null); setActiveTab(tab); }} />
 
         <main className="flex-1 p-6 overflow-x-hidden">
           {role === 'victim' && renderVictimPage()}
+          {role === 'police_officer' && renderPolicePage()}
           {role === 'counsellor' && renderCounsellorPage()}
+          {role === 'protection_officer' && renderProtectionPage()}
           {role === 'district_officer' && renderDistrictPage()}
           {role === 'admin' && renderAdminPage()}
         </main>
       </div>
+
+      <VoiceAssistantModal
+        isOpen={isVoiceAssistantOpen}
+        onClose={() => setIsVoiceAssistantOpen(false)}
+      />
     </div>
   );
 };

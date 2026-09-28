@@ -32,7 +32,7 @@ def create_session(req: ChatSessionCreate):
 
 @router.post("/message")
 def send_message(req: ChatMessageCreate):
-    res = llm_service.generate_chat_response(req.message_text)
+    res = llm_service.generate_chat_response(req.message_text, victim_id=req.victim_id)
 
     msg_id = str(uuid.uuid4())
     user_msg = {
@@ -56,8 +56,16 @@ def send_message(req: ChatMessageCreate):
     db_service.chat_messages.append(user_msg)
     db_service.chat_messages.append(bot_msg)
 
-    # Auto-alert if high threat detected in chat
+    # Persist psychological telemetry & emotion signals to restricted store (Accessible ONLY by officials)
     nlp_res = res['nlp_analysis']
+    db_service.add_chat_emotion_analysis(
+        victim_id=req.victim_id,
+        session_id=req.session_id,
+        message_id=msg_id,
+        nlp_analysis=nlp_res
+    )
+
+    # Auto-alert if high threat detected in chat
     if nlp_res.get('threat_signal'):
         alert_id = str(uuid.uuid4())
         v = db_service.get_victim_by_id(req.victim_id)
@@ -73,9 +81,23 @@ def send_message(req: ChatMessageCreate):
             'created_at': datetime.utcnow().isoformat() + 'Z'
         })
 
+    # Note: nlp_analysis is intentionally REDACTED from victim-facing response for psychological privacy
     return {
         'user_message': user_msg,
         'bot_message': bot_msg,
-        'nlp_analysis': nlp_res,
         'mode': res['mode']
+    }
+
+@router.get("/officials/analysis/{victim_id}")
+def get_chat_analysis_for_officials(victim_id: str):
+    """
+    Restricted to authorized officials (Counsellor, Protection Officer, District Admin).
+    Returns chronological psychological telemetry & emotion signals extracted from chat sessions.
+    """
+    analyses = db_service.get_chat_emotion_analyses(victim_id)
+    return {
+        'status': 'success',
+        'victim_id': victim_id,
+        'analyses': analyses,
+        'total_count': len(analyses)
     }

@@ -4,6 +4,7 @@ import { RiskBadge } from '../../components/ui/RiskBadge';
 import { TrendBadge } from '../../components/ui/TrendBadge';
 import { DistressGauge } from '../../components/ui/DistressGauge';
 import { AIExplanationCard } from '../../components/ui/AIExplanationCard';
+import { PeakStressCard } from '../../components/ui/PeakStressCard';
 import { 
   ArrowLeft, Calendar, ShieldAlert, FileText, CheckCircle2, UserCheck, 
   Brain, AlertTriangle, Shield, Clock, Plus, Edit3
@@ -16,7 +17,7 @@ interface VictimDetailProps {
 }
 
 export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'checkins' | 'nlp' | 'threats' | 'interventions'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'checkins' | 'peak_hours' | 'nlp' | 'threats' | 'interventions'>('overview');
   const [trendData, setTrendData] = useState<any[]>([]);
   const [latestAssessment, setLatestAssessment] = useState<any>(null);
   const [threats, setThreats] = useState<any[]>([]);
@@ -104,12 +105,12 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
           </button>
           <div>
             <div className="flex items-center space-x-2">
-              <h2 className="text-lg font-bold text-slate-900">Victim Code: VIC-2026-101</h2>
+              <h2 className="text-lg font-bold text-slate-900">Victim Code: VIC-DEMO-0001</h2>
               <span className="font-mono text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
-                Case: POA-PUNE-2026-042
+                Case: CASE-DEMO-0001
               </span>
             </div>
-            <p className="text-xs text-slate-500">Sunita Devi • Female (26-35) • Pune District</p>
+            <p className="text-xs text-slate-500">Sunita Devi • Female (26-35) • NTR District (AP-NTR-01)</p>
           </div>
         </div>
 
@@ -156,9 +157,10 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-200 flex space-x-4">
+      <div className="border-b border-slate-200 flex space-x-4 overflow-x-auto">
         {[
           { id: 'overview', label: 'Longitudinal Overview & AI Factors' },
+          { id: 'peak_hours', label: 'Diurnal Peak Stress Analytics' },
           { id: 'checkins', label: 'Domain Scores Breakdown' },
           { id: 'nlp', label: 'NLP Signal Analysis' },
           { id: 'threats', label: 'Threat & Protection Events' },
@@ -210,6 +212,16 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
           <div>
             <AIExplanationCard explanation={latestAssessment?.explanation || defaultExplanation} />
           </div>
+        </div>
+      )}
+
+      {/* TAB CONTENT: Peak Hours Analytics */}
+      {activeTab === 'peak_hours' && (
+        <div className="space-y-4">
+          <PeakStressCard
+            peakWindow="8:00 PM — 11:00 PM"
+            peakLevel={riskLevel === 'CRITICAL' ? 'CRITICAL' : 'HIGH'}
+          />
         </div>
       )}
 

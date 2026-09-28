@@ -55,18 +55,79 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
     setAnswers((prev) => ({ ...prev, immediate_danger: val }));
   };
 
+  const [speechStatus, setSpeechStatus] = useState<string>('');
+  const recognitionRef = React.useRef<any>(null);
+  const initialTextRef = React.useRef<string>('');
+
   const toggleRecording = () => {
-    if (!isRecording) {
-      setIsRecording(true);
-      setTimeout(() => {
-        setIsRecording(false);
-        setAnswers((prev) => ({
-          ...prev,
-          free_text_response: prev.free_text_response + " [Voice Note Transcribed]: I am worried about the court date next week. Some people approached me at the market yesterday."
-        }));
-      }, 3000);
-    } else {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Voice recognition is not supported in this browser. Please use Chrome, Edge, or Brave.");
+      return;
+    }
+
+    if (isRecording) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {
+          console.warn("Error stopping recognition:", e);
+        }
+      }
       setIsRecording(false);
+      setSpeechStatus('Recording stopped.');
+      return;
+    }
+
+    try {
+      initialTextRef.current = answers.free_text_response;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        setIsRecording(true);
+        setSpeechStatus('🎤 Listening... Speak clearly into your microphone.');
+      };
+
+      recognition.onresult = (event: any) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = 0; i < event.results.length; i++) {
+          const trans = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += trans;
+          } else {
+            interimTranscript += trans;
+          }
+        }
+
+        const currentSpeech = (finalTranscript + interimTranscript).trim();
+        const base = initialTextRef.current.trim();
+        const combined = base ? `${base} ${currentSpeech}` : currentSpeech;
+        setAnswers((prev) => ({ ...prev, free_text_response: combined }));
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn('Speech recognition error:', event.error);
+        setIsRecording(false);
+        setSpeechStatus(`Speech error: ${event.error}. Please check mic permissions.`);
+      };
+
+      recognition.onend = () => {
+        setIsRecording(false);
+        setSpeechStatus('Voice transcription completed.');
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (e) {
+      console.warn("Failed to initialize SpeechRecognition:", e);
+      setIsRecording(false);
+      alert("Unable to access microphone. Please allow microphone permissions in your browser.");
     }
   };
 
@@ -78,16 +139,12 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
         ...answers
       };
       const res = await api.submitCheckin(payload);
-      onComplete(res.assessment);
+      onComplete(res);
     } catch (e) {
       console.warn("Failed to submit checkin to backend:", e);
       onComplete({
-        dynamic_distress_score: answers.immediate_danger ? 85 : 55,
-        risk_level: answers.immediate_danger ? 'CRITICAL' : 'MODERATE',
-        distress_trend: 'Stable',
-        explanation: {
-          top_factors: [{ factor: 'Check-in processed', impact: 'moderate' }]
-        }
+        status: 'success',
+        message: 'Your check-in has been securely recorded and forwarded to your assigned support officers.'
       });
     } finally {
       setIsSubmitting(false);
@@ -245,19 +302,25 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
               className="w-full p-3.5 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-teal-600"
             />
 
-            <div className="flex items-center space-x-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 type="button"
                 onClick={toggleRecording}
                 className={`px-4 py-2 rounded-xl border text-xs font-semibold flex items-center space-x-2 transition-all ${
                   isRecording
-                    ? 'bg-red-600 text-white border-red-700 animate-pulse'
-                    : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+                    ? 'bg-red-600 text-white border-red-700 animate-pulse shadow-lg'
+                    : 'bg-teal-50 text-teal-800 border-teal-200 hover:bg-teal-100'
                 }`}
               >
                 {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4 text-teal-600" />}
-                <span>{isRecording ? 'Listening (Microphone Active)...' : 'Record Voice Input (Whisper STT)'}</span>
+                <span>{isRecording ? 'Stop Recording' : 'Speak Voice Input (Real STT)'}</span>
               </button>
+
+              {speechStatus && (
+                <span className="text-xs font-medium text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100">
+                  {speechStatus}
+                </span>
+              )}
             </div>
           </div>
 

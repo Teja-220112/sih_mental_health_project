@@ -1,4 +1,4 @@
-export type UserRole = 'victim' | 'counsellor' | 'district_officer' | 'admin';
+export type UserRole = 'victim' | 'counsellor' | 'protection_officer' | 'district_officer' | 'admin' | 'police_officer';
 
 export type RiskLevel = 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL';
 
@@ -24,6 +24,7 @@ export interface VictimProfile {
   preferred_language?: string;
   district_id?: string;
   registration_date?: string;
+  is_synthetic?: boolean;
 }
 
 export interface CaseRecord {
@@ -40,6 +41,7 @@ export interface CaseRecord {
   days_since_complaint?: number;
   number_of_hearings?: number;
   next_hearing_date?: string;
+  is_synthetic?: boolean;
 }
 
 export interface AIAssessment {
@@ -112,3 +114,48 @@ export interface NLPAnalysisResult {
   threat_score: number;
   detected_threat_categories?: string[];
 }
+
+export interface VictimRegistrationPayload {
+  name: string;
+  age_group: string;
+  gender: string;
+  preferred_language: string;
+  email?: string;
+  case_category: string;
+  incident_description: string;
+  police_station: string;
+  assigned_counsellor?: string;
+  assigned_protection_officer?: string;
+  protection_required: boolean;
+  rehabilitation_requirements: string;
+}
+
+export interface VictimRegistrationResponse {
+  victim_id: string;
+  victim_code: string;
+  login_identifier: string;
+  email: string;
+  temporary_password: string;
+  name: string;
+  case_code: string;
+  assigned_counsellor: string;
+  assigned_protection_officer: string;
+  message: string;
+}
+
+export interface AssistedCheckinPayload {
+  victim_id: string;
+  recorded_by?: string;
+  stress_score: number;
+  anxiety_score: number;
+  fear_score: number;
+  sleep_score: number;
+  safety_score: number;
+  threat_score: number;
+  social_support_score: number;
+  functioning_score: number;
+  case_related_distress: number;
+  immediate_danger?: boolean;
+  free_text_response?: string;
+}
+

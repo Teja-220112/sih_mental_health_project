@@ -1,30 +1,94 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../lib/authContext';
 import { api } from '../../lib/api';
-import { MessageSquare, Send, ShieldAlert, Bot, User, AlertTriangle } from 'lucide-react';
+import { MessageSquare, Send, Bot, User, ShieldCheck, Mic, MicOff, HeartHandshake } from 'lucide-react';
 
 export const VictimChat: React.FC = () => {
-  const { victim } = useAuth();
-  const victimId = victim?.id || '70000000-0000-0000-0000-000000000001';
+  const { victim, user } = useAuth();
+  const victimId = victim?.id || user?.id || '70000000-0000-0000-0000-000000000001';
 
   const [sessionId, setSessionId] = useState<string>('session-1');
   const [messages, setMessages] = useState<Array<{ sender: string; message_text: string; timestamp?: string }>>([
     {
       sender: 'bot',
-      message_text: "Hello. I am your supportive MoSJE assistant. I am here to listen and help monitor your check-in wellbeing. How are you feeling today?",
+      message_text: `Hello ${victim?.name || 'there'}. I am your supportive care assistant. I am here to listen, offer calming guidance, and provide a safe space whenever you need to talk. How are you feeling right now?`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
 
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const [lastNLP, setLastNLP] = useState<any>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef<any>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const initialChatTextRef = useRef<string>('');
+
+  const toggleSpeech = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Voice recognition is not supported in this browser. Please use Chrome, Edge, or Brave.");
+      return;
+    }
+
+    if (isRecording) {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch (e) {}
+      }
+      setIsRecording(false);
+      return;
+    }
+
+    try {
+      initialChatTextRef.current = inputText;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        setIsRecording(true);
+      };
+
+      recognition.onresult = (event: any) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = 0; i < event.results.length; i++) {
+          const trans = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += trans;
+          } else {
+            interimTranscript += trans;
+          }
+        }
+
+        const currentSpeech = (finalTranscript + interimTranscript).trim();
+        const base = initialChatTextRef.current.trim();
+        setInputText(base ? `${base} ${currentSpeech}` : currentSpeech);
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn("Speech error:", event.error);
+        setIsRecording(false);
+      };
+
+      recognition.onend = () => {
+        setIsRecording(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (e) {
+      console.warn("Failed speech start:", e);
+      setIsRecording(false);
+    }
+  };
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,19 +110,30 @@ export const VictimChat: React.FC = () => {
         ...prev,
         { sender: 'bot', message_text: res.bot_message.message_text, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
       ]);
-      setLastNLP(res.nlp_analysis);
+      // Note: Emotion and sentiment telemetry is intentionally private and NOT shown to victims
     } catch (e) {
-      console.warn("API Chat failed, using fallback:", e);
+      console.warn("API Chat fallback to dynamic local generator:", e);
+      const lower = userText.toLowerCase();
+      let dynamicReply = `Thank you for sharing that with me. I hear you, and please know that you are not alone in this journey. Would you like me to suggest a relaxing breathing exercise, or would you prefer to talk through what is on your mind?`;
+      
+      if (lower.includes('sad') || lower.includes('low') || lower.includes('cry') || lower.includes('depressed') || lower.includes('alone')) {
+        dynamicReply = "I hear how heavy and overwhelming things feel right now. What you are experiencing is valid, and carrying this stress is difficult. Take a deep, gentle breath with me. I am right here with you.";
+      } else if (lower.includes('angry') || lower.includes('mad') || lower.includes('frustrated') || lower.includes('scared') || lower.includes('fear')) {
+        dynamicReply = "It is completely normal and understandable to feel this way. Your safety and peace of mind are the top priority. If you ever feel unsafe at any moment, please press the Emergency Call button or reach out to 112.";
+      } else if (lower.includes('help') || lower.includes('support') || lower.includes('counsel')) {
+        dynamicReply = "Your dedicated counsellor and protection support team are actively assigned to your case. If you'd like to schedule time with your counsellor or need emergency assistance, I can help connect you immediately.";
+      }
+
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
           {
             sender: 'bot',
-            message_text: "I hear how much stress this court process is causing you. Your counsellor has been notified to follow up with you. Please take deep breaths and remember you are supported.",
+            message_text: dynamicReply,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
-      }, 800);
+      }, 500);
     } finally {
       setIsSending(false);
     }
@@ -68,30 +143,32 @@ export const VictimChat: React.FC = () => {
     <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[650px]">
       
       {/* Header */}
-      <div className="bg-navy-900 text-white p-4 flex items-center justify-between border-b border-navy-800">
+      <div className="bg-slate-900 text-white p-4 flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-teal-700/80 rounded-xl text-teal-100">
-            <Bot className="w-5 h-5" />
+          <div className="p-2.5 bg-teal-500/20 text-teal-400 rounded-xl border border-teal-500/30">
+            <HeartHandshake className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-sm text-white">Supportive AI Chatbot</h3>
-            <p className="text-[11px] text-slate-400">Non-clinical supportive conversational assistant</p>
+            <h3 className="font-bold text-sm text-white">Supportive Care Assistant</h3>
+            <p className="text-[11px] text-slate-400">Confidential, supportive listening and wellness companion</p>
           </div>
         </div>
 
-        <span className="text-[10px] font-semibold bg-teal-900/60 text-teal-300 px-2.5 py-1 rounded-full border border-teal-700">
-          ● AI Safety Guardrails Active
-        </span>
+        <div className="flex items-center space-x-1.5 text-[11px] font-semibold bg-teal-950/80 text-teal-300 px-3 py-1 rounded-full border border-teal-800">
+          <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+          <span>Confidential & Protected</span>
+        </div>
       </div>
 
       {/* Safety Notice */}
-      <div className="bg-amber-50 p-2.5 border-b border-amber-200 text-[11px] text-amber-900 flex items-center space-x-2">
-        <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-        <span>This chatbot offers supportive listening. High-risk signals or threats are escalated to human counsellors.</span>
+      <div className="bg-teal-50/80 px-4 py-2.5 border-b border-teal-100 text-[11px] text-teal-900 flex items-center justify-between">
+        <span className="flex items-center space-x-1.5">
+          <span>This assistant is here to listen and help you feel grounded. For immediate danger, always call <strong>112</strong> or <strong>181</strong>.</span>
+        </span>
       </div>
 
       {/* Message List */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50">
+      <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50/60">
         {messages.map((msg, idx) => (
           <div
             key={idx}
@@ -100,13 +177,13 @@ export const VictimChat: React.FC = () => {
             }`}
           >
             {msg.sender !== 'victim' && (
-              <div className="w-7 h-7 rounded-full bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+              <div className="w-8 h-8 rounded-full bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">
                 <Bot className="w-4 h-4" />
               </div>
             )}
 
             <div
-              className={`max-w-[75%] rounded-2xl p-3.5 text-xs leading-relaxed shadow-sm ${
+              className={`max-w-[78%] rounded-2xl p-3.5 text-xs leading-relaxed shadow-sm ${
                 msg.sender === 'victim'
                   ? 'bg-teal-700 text-white rounded-tr-none'
                   : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none'
@@ -119,7 +196,7 @@ export const VictimChat: React.FC = () => {
             </div>
 
             {msg.sender === 'victim' && (
-              <div className="w-7 h-7 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+              <div className="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">
                 <User className="w-4 h-4" />
               </div>
             )}
@@ -127,30 +204,14 @@ export const VictimChat: React.FC = () => {
         ))}
 
         {isSending && (
-          <div className="flex items-center space-x-2 text-slate-400 text-xs italic pl-2">
-            <Bot className="w-4 h-4 animate-spin text-teal-600" />
-            <span>AI is analyzing message signals and generating supportive response...</span>
+          <div className="flex items-center space-x-2 text-slate-400 text-xs italic pl-2 py-1">
+            <div className="w-2 h-2 rounded-full bg-teal-500 animate-ping" />
+            <span>Assistant is typing a supportive response...</span>
           </div>
         )}
 
         <div ref={messagesEndRef} />
       </div>
-
-      {/* NLP Preview Banner */}
-      {lastNLP && (
-        <div className="bg-slate-900 text-slate-300 p-2.5 text-[11px] border-t border-slate-800 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <span>Sentiment: <strong className="text-teal-400">{lastNLP.sentiment_label}</strong></span>
-            <span>Primary Emotion: <strong className="text-amber-400">{lastNLP.emotion_label}</strong></span>
-            {lastNLP.threat_signal && (
-              <span className="text-red-400 font-bold bg-red-950 px-2 py-0.5 rounded border border-red-800">
-                ⚠️ Threat Signal Detected ({lastNLP.threat_score}/100)
-              </span>
-            )}
-          </div>
-          <span className="text-[10px] text-slate-500 font-mono">Signal Extraction Engine</span>
-        </div>
-      )}
 
       {/* Input Form */}
       <form onSubmit={handleSend} className="p-3 bg-white border-t border-slate-200 flex items-center space-x-2">
@@ -158,14 +219,29 @@ export const VictimChat: React.FC = () => {
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder="Share your thoughts or concerns with supportive assistant..."
-          className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-teal-600"
+          placeholder={isRecording ? "Listening to your voice... Speak now." : "Share your thoughts or concerns with your assistant..."}
+          className={`flex-1 px-4 py-2.5 border rounded-xl text-xs text-slate-900 focus:outline-none transition-all ${
+            isRecording ? 'bg-red-50 border-red-300 placeholder-red-400 font-medium' : 'bg-slate-50 border-slate-300 focus:border-teal-600'
+          }`}
         />
+
+        <button
+          type="button"
+          onClick={toggleSpeech}
+          title={isRecording ? "Stop voice recording" : "Speak into microphone"}
+          className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+            isRecording
+              ? 'bg-red-600 text-white border-red-700 animate-pulse shadow'
+              : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+          }`}
+        >
+          {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4 text-teal-600" />}
+        </button>
 
         <button
           type="submit"
           disabled={!inputText.trim() || isSending}
-          className="p-2.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white rounded-xl shadow transition-all"
+          className="p-2.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white rounded-xl shadow transition-all cursor-pointer"
         >
           <Send className="w-4 h-4" />
         </button>
@@ -174,3 +250,5 @@ export const VictimChat: React.FC = () => {
     </div>
   );
 };
+
+export default VictimChat;
