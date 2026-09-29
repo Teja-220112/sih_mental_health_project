@@ -1,7 +1,20 @@
-const rawBase = import.meta.env.VITE_API_URL || '/api/v1';
-const API_BASE = rawBase.startsWith('http')
-  ? (rawBase.endsWith('/api/v1') ? rawBase : `${rawBase.replace(/\/$/, '')}/api/v1`)
-  : '/api/v1';
+const getApiBase = (): string => {
+  if (typeof window !== 'undefined') {
+    const isRemote = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    const envUrl: string | undefined = import.meta.env.VITE_API_URL;
+    if (isRemote) {
+      if (!envUrl || envUrl.includes('localhost') || envUrl.includes('127.0.0.1')) {
+        return '/api/v1';
+      }
+    }
+    if (envUrl && envUrl.startsWith('http')) {
+      return envUrl.endsWith('/api/v1') ? envUrl : `${envUrl.replace(/\/$/, '')}/api/v1`;
+    }
+  }
+  return '/api/v1';
+};
+
+const API_BASE = getApiBase();
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   try {
