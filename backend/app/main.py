@@ -35,8 +35,27 @@ for prefix in ["/api/v1", "/api"]:
     app.include_router(ml.router, prefix=f"{prefix}/ml", tags=["ML Monitoring"])
     app.include_router(officials.router, prefix=f"{prefix}/officials", tags=["Officials"])
 
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
+
+# Resolve static frontend build directory
+static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
+if not os.path.exists(static_dir):
+    # Fallback to root static if present
+    static_dir = os.path.join(os.path.dirname(__file__), "..", "..", "static")
+
+if os.path.exists(static_dir) and os.path.exists(os.path.join(static_dir, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(static_dir, "assets")), name="assets")
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "service": "MoSJE-AI-Backend"}
+
 @app.get("/")
 def root():
+    if os.path.exists(static_dir) and os.path.exists(os.path.join(static_dir, "index.html")):
+        return FileResponse(os.path.join(static_dir, "index.html"))
     return {
         "status": "online",
         "project": settings.PROJECT_NAME,
@@ -45,6 +64,16 @@ def root():
         "llm_status": "Configured (OpenAI)" if settings.OPENAI_API_KEY else "Demo Fallback Mode (Deterministic Supportive Bot)"
     }
 
-@app.get("/health")
-def health_check():
-    return {"status": "healthy", "service": "MoSJE-AI-Backend"}
+# SPA Fallback for client-side routing (e.g. /login, /dashboard)
+if os.path.exists(static_dir):
+    @app.get("/{full_path:path}")
+    def serve_spa(full_path: str):
+        # Do not catch API routes, docs or health checks
+        if full_path.startswith("api") or full_path in ["health", "docs", "openapi.json", "redoc"]:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="Not Found")
+        
+        target_file = os.path.join(static_dir, full_path)
+        if os.path.exists(target_file) and os.path.isfile(target_file):
+            return FileResponse(target_file)
+        return FileResponse(os.path.join(static_dir, "index.html"))
