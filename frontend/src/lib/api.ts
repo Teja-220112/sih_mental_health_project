@@ -1,4 +1,7 @@
-const API_BASE = '/api/v1';
+const rawBase = import.meta.env.VITE_API_URL || '/api/v1';
+const API_BASE = rawBase.startsWith('http')
+  ? (rawBase.endsWith('/api/v1') ? rawBase : `${rawBase.replace(/\/$/, '')}/api/v1`)
+  : '/api/v1';
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   try {
