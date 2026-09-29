@@ -95,22 +95,22 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
     <div className="space-y-6">
       
       {/* Header */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
           <button
             onClick={onBack}
-            className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all"
+            className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-all cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
             <div className="flex items-center space-x-2">
-              <h2 className="text-lg font-bold text-slate-900">Victim Code: VIC-DEMO-0001</h2>
-              <span className="font-mono text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Victim Code: VIC-DEMO-0001</h2>
+              <span className="font-mono text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded">
                 Case: CASE-DEMO-0001
               </span>
             </div>
-            <p className="text-xs text-slate-500">Sunita Devi • Female (26-35) • NTR District (AP-NTR-01)</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Sunita Devi • Female (26-35) • NTR District (AP-NTR-01)</p>
           </div>
         </div>
 
@@ -118,7 +118,7 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
           <RiskBadge level={riskLevel} size="lg" />
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs rounded-xl shadow transition-all flex items-center space-x-1.5"
+            className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs rounded-xl shadow transition-all flex items-center space-x-1.5 cursor-pointer"
           >
             <UserCheck className="w-4 h-4" />
             <span>Record Intervention</span>
@@ -127,28 +127,28 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
       </div>
 
       {/* Primary Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase">Current Score</span>
-          <div className="text-3xl font-extrabold text-slate-900 mt-1">{score} <span className="text-xs font-normal text-slate-400">/ 100</span></div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-center flex flex-col items-center justify-center border-t-4 border-t-teal-500">
+          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Current Score</span>
+          <div className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">{score} <span className="text-xs font-normal text-slate-400">/ 100</span></div>
           <span className="text-[10px] text-slate-400 mt-1">Screening Signal</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase">Previous Assessment</span>
-          <div className="text-2xl font-bold text-slate-700 mt-1">{prevScore} <span className="text-xs font-normal text-slate-400">/ 100</span></div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-center flex flex-col items-center justify-center border-t-4 border-t-amber-500">
+          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Previous Assessment</span>
+          <div className="text-2xl font-bold text-slate-700 dark:text-slate-200 mt-1">{prevScore} <span className="text-xs font-normal text-slate-400">/ 100</span></div>
           <span className="text-[10px] text-slate-400 mt-1">Change: +{score - prevScore} pts</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase">Distress Trend</span>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-center flex flex-col items-center justify-center border-t-4 border-t-purple-500">
+          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Distress Trend</span>
           <div className="mt-2"><TrendBadge trend={trend} /></div>
           <span className="text-[10px] text-slate-400 mt-1">7-Day Change Horizon</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase">Safety Concern</span>
-          <div className="text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-md mt-2 border border-red-200 inline-flex items-center gap-1">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-center flex flex-col items-center justify-center border-t-4 border-t-red-500">
+          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Safety Concern</span>
+          <div className="text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2.5 py-1 rounded-md mt-2 border border-red-200 dark:border-red-900/60 inline-flex items-center gap-1">
             <AlertTriangle className="w-3.5 h-3.5" />
             <span>Intimidation Reported</span>
           </div>
@@ -157,7 +157,7 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-200 flex space-x-4 overflow-x-auto">
+      <div className="border-b border-slate-200 dark:border-slate-800 flex space-x-2 sm:space-x-4 overflow-x-auto pb-1 -mx-2 sm:mx-0 px-2 sm:px-0">
         {[
           { id: 'overview', label: 'Longitudinal Overview & AI Factors' },
           { id: 'peak_hours', label: 'Diurnal Peak Stress Analytics' },
@@ -169,10 +169,10 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`py-2.5 px-3 text-xs font-semibold border-b-2 transition-all ${
+            className={`py-2.5 px-3 text-xs font-semibold border-b-2 whitespace-nowrap transition-all cursor-pointer ${
               activeTab === tab.id
-                ? 'border-teal-600 text-teal-700'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
+                ? 'border-teal-600 text-teal-700 dark:text-teal-400 font-bold'
+                : 'border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
             }`}
           >
             {tab.label}
@@ -183,8 +183,8 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
       {/* TAB CONTENT: Overview */}
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-            <h3 className="font-bold text-sm text-slate-900">Longitudinal Distress Recovery Curve</h3>
+          <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h3 className="font-bold text-sm text-slate-900 dark:text-white">Longitudinal Distress Recovery Curve</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={trendData.length > 0 ? trendData : [
@@ -199,12 +199,12 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
                 ]}>
                   <XAxis dataKey="date" stroke="#64748B" fontSize={11} />
                   <YAxis domain={[0, 100]} stroke="#64748B" fontSize={11} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0F172A', color: '#fff', fontSize: '12px' }} />
-                  <Area type="monotone" dataKey="score" stroke="#0F766E" strokeWidth={3} fill="#CCFBF1" />
+                  <Tooltip contentStyle={{ backgroundColor: '#0F172A', borderColor: '#334155', color: '#fff', fontSize: '12px' }} />
+                  <Area type="monotone" dataKey="score" stroke="#0F766E" strokeWidth={3} fill="#CCFBF1" fillOpacity={0.4} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-xs text-slate-500 italic">
+            <p className="text-xs text-slate-500 dark:text-slate-400 italic">
               Demonstrates AI early escalation warning on Aug 20 followed by human counselling intervention improving trend.
             </p>
           </div>
@@ -227,10 +227,10 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
 
       {/* TAB CONTENT: Domain Breakdown */}
       {activeTab === 'checkins' && (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-          <h3 className="font-bold text-sm text-slate-900">Structured Questionnaire Domain Breakdown (0-100 Scale)</h3>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <h3 className="font-bold text-sm text-slate-900 dark:text-white">Structured Questionnaire Domain Breakdown (0-100 Scale)</h3>
           
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {[
               { domain: 'Stress', score: 80, color: 'bg-orange-500' },
               { domain: 'Anxiety', score: 85, color: 'bg-red-500' },
@@ -242,12 +242,12 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
               { domain: 'Daily Functioning', score: 70, color: 'bg-orange-500' },
               { domain: 'Case Related Distress', score: 85, color: 'bg-red-500' },
             ].map((item, idx) => (
-              <div key={idx} className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-                <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+              <div key={idx} className="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700/60">
+                <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-200">
                   <span>{item.domain}</span>
                   <span className="font-bold">{item.score}/100</span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-2 mt-2">
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mt-2">
                   <div className={`${item.color} h-2 rounded-full`} style={{ width: `${item.score}%` }} />
                 </div>
               </div>
@@ -258,20 +258,20 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
 
       {/* TAB CONTENT: NLP */}
       {activeTab === 'nlp' && (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-          <h3 className="font-bold text-sm text-slate-900">NLP Multilingual Sentiment & Emotion Signal Analysis</h3>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <h3 className="font-bold text-sm text-slate-900 dark:text-white">NLP Multilingual Sentiment & Emotion Signal Analysis</h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-              <div className="text-xs font-semibold text-slate-500">Sentiment Score</div>
-              <div className="text-lg font-bold text-red-600">-0.85 (Strongly Negative)</div>
-              <p className="text-[11px] text-slate-500">Extracted from free-text check-in and chatbot message history.</p>
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-2">
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Sentiment Score</div>
+              <div className="text-lg font-bold text-red-600 dark:text-red-400">-0.85 (Strongly Negative)</div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">Extracted from free-text check-in and chatbot message history.</p>
             </div>
 
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-              <div className="text-xs font-semibold text-slate-500">Primary Emotion Signal</div>
-              <div className="text-lg font-bold text-orange-600">Fear & High Anxiety (0.92)</div>
-              <p className="text-[11px] text-slate-500">XLM-RoBERTa Multilingual Emotion Classifier.</p>
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-2">
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Primary Emotion Signal</div>
+              <div className="text-lg font-bold text-orange-600 dark:text-orange-400">Fear & High Anxiety (0.92)</div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">XLM-RoBERTa Multilingual Emotion Classifier.</p>
             </div>
           </div>
         </div>
@@ -279,36 +279,36 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
 
       {/* TAB CONTENT: Threats */}
       {activeTab === 'threats' && (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-          <h3 className="font-bold text-sm text-slate-900">Reported Threat & Intimidation Events</h3>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <h3 className="font-bold text-sm text-slate-900 dark:text-white">Reported Threat & Intimidation Events</h3>
           
           {threats.length > 0 ? (
             <div className="space-y-3">
               {threats.map((th: any) => (
-                <div key={th.id} className="p-4 bg-red-50 rounded-xl border border-red-200 space-y-2 text-xs">
-                  <div className="flex items-center justify-between font-bold text-red-900">
+                <div key={th.id} className="p-4 bg-red-50 dark:bg-red-950/30 rounded-xl border border-red-200 dark:border-red-900/60 space-y-2 text-xs">
+                  <div className="flex items-center justify-between font-bold text-red-900 dark:text-red-200">
                     <span>{th.threat_type}</span>
-                    <span className="text-[10px] bg-red-200 text-red-800 px-2 py-0.5 rounded">Severity {th.severity}/5</span>
+                    <span className="text-[10px] bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 px-2 py-0.5 rounded">Severity {th.severity}/5</span>
                   </div>
-                  <p className="text-red-800">{th.description}</p>
-                  <div className="text-[11px] text-red-700 font-medium">Action Taken: {th.action_taken}</div>
+                  <p className="text-red-800 dark:text-red-300">{th.description}</p>
+                  <div className="text-[11px] text-red-700 dark:text-red-400 font-medium">Action Taken: {th.action_taken}</div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-xs text-slate-500 py-4 text-center">No active threat events reported.</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 py-4 text-center">No active threat events reported.</div>
           )}
         </div>
       )}
 
       {/* TAB CONTENT: Interventions */}
       {activeTab === 'interventions' && (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-sm text-slate-900">Counselling & Intervention Records</h3>
+            <h3 className="font-bold text-sm text-slate-900 dark:text-white">Counselling & Intervention Records</h3>
             <button
               onClick={() => setShowModal(true)}
-              className="px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-semibold"
+              className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold shadow cursor-pointer"
             >
               + New Intervention
             </button>
@@ -316,12 +316,12 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
 
           <div className="space-y-3">
             {interventions.map((inv: any) => (
-              <div key={inv.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs">
-                <div className="flex items-center justify-between font-bold text-slate-900">
+              <div key={inv.id} className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-2 text-xs">
+                <div className="flex items-center justify-between font-bold text-slate-900 dark:text-white">
                   <span>{inv.intervention_type}</span>
-                  <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px]">{inv.status}</span>
+                  <span className="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded text-[10px]">{inv.status}</span>
                 </div>
-                <p className="text-slate-600">{inv.outcome || inv.notes}</p>
+                <p className="text-slate-600 dark:text-slate-300">{inv.outcome || inv.notes}</p>
                 <div className="text-[11px] text-slate-400">Approved by: {inv.approved_by}</div>
               </div>
             ))}
@@ -332,19 +332,19 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
       {/* MODAL: Record Intervention & Override AI */}
       {showModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
-              <h3 className="font-bold text-base text-slate-900">Record Human Intervention Decision</h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">Record Human Intervention Decision</h3>
+              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
             </div>
 
             <form onSubmit={handleCreateIntervention} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Intervention Type</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Intervention Type</label>
                 <select
                   value={interventionType}
                   onChange={(e) => setInterventionType(e.target.value)}
-                  className="w-full p-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600 text-xs"
+                  className="w-full p-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:outline-none focus:border-teal-600 text-xs"
                 >
                   <option>Scheduled In-Person Counselling</option>
                   <option>Urgent Protection Escort Request</option>
@@ -354,18 +354,18 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Counsellor Clinical Notes</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Counsellor Clinical Notes</label>
                 <textarea
                   rows={3}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Record observations, safety findings, and scheduled follow-ups..."
-                  className="w-full p-2.5 border border-slate-300 rounded-lg text-xs"
+                  className="w-full p-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg text-xs"
                 />
               </div>
 
-              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 space-y-2">
-                <label className="flex items-center space-x-2 font-semibold text-amber-900">
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-900/60 space-y-2">
+                <label className="flex items-center space-x-2 font-semibold text-amber-900 dark:text-amber-200">
                   <input
                     type="checkbox"
                     checked={isAiOverride}
@@ -377,7 +377,7 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
 
                 {isAiOverride && (
                   <div>
-                    <label className="block text-[11px] font-bold text-amber-900 mb-1">
+                    <label className="block text-[11px] font-bold text-amber-900 dark:text-amber-200 mb-1">
                       Mandatory Clinical Override Reason *
                     </label>
                     <input
@@ -386,7 +386,7 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
                       value={overrideReason}
                       onChange={(e) => setOverrideReason(e.target.value)}
                       placeholder="State reason why AI recommendation is overridden..."
-                      className="w-full p-2 bg-white border border-amber-300 rounded text-xs"
+                      className="w-full p-2 bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700 text-slate-900 dark:text-slate-100 rounded text-xs"
                     />
                   </div>
                 )}
@@ -396,7 +396,7 @@ export const VictimDetail: React.FC<VictimDetailProps> = ({ victimId, onBack }) 
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg"
+                  className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
                 >
                   Cancel
                 </button>

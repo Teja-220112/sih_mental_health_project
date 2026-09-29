@@ -166,41 +166,41 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
-      <div className="bg-gradient-to-br from-slate-900 via-navy-900 to-slate-900 text-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-700/80 relative overflow-hidden flex flex-col space-y-5">
+    <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+      <div className="bg-gradient-to-br from-slate-900 via-navy-900 to-slate-900 text-white rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-700/80 relative overflow-hidden flex flex-col space-y-4 sm:space-y-5">
         
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3 sm:pb-4">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 bg-teal-500/20 text-teal-300 rounded-2xl border border-teal-500/30">
-              <Bot className="w-6 h-6 text-teal-400" />
+            <div className="p-2 sm:p-2.5 bg-teal-500/20 text-teal-300 rounded-2xl border border-teal-500/30">
+              <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-teal-400" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-white">MoSJE Interactive Voice Assistant</h3>
-              <p className="text-[11px] text-slate-400">Real-time voice-to-text & voice response assistant</p>
+              <h3 className="font-bold text-sm sm:text-base text-white">MoSJE Interactive Voice Assistant</h3>
+              <p className="text-[10px] sm:text-[11px] text-slate-400">Real-time voice-to-text & voice response assistant</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 rounded-xl transition-all"
+            className="p-1.5 sm:p-2 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 rounded-xl transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Live Audio Visualizer & Mic Button */}
-        <div className="flex flex-col items-center justify-center py-4 bg-slate-950/60 rounded-2xl border border-slate-800/80 p-6 space-y-4">
+        <div className="flex flex-col items-center justify-center py-4 bg-slate-950/60 rounded-2xl border border-slate-800/80 p-4 sm:p-6 space-y-4">
           <button
             type="button"
             onClick={toggleListening}
-            className={`relative p-6 rounded-full transition-all shadow-2xl ${
+            className={`relative p-5 sm:p-6 rounded-full transition-all shadow-2xl cursor-pointer ${
               isListening
                 ? 'bg-red-600 text-white animate-pulse ring-8 ring-red-500/30'
                 : 'bg-teal-600 hover:bg-teal-500 text-white ring-4 ring-teal-500/20'
             }`}
           >
-            {isListening ? <MicOff className="w-8 h-8" /> : <Mic className="w-8 h-8" />}
+            {isListening ? <MicOff className="w-7 h-7 sm:w-8 sm:h-8" /> : <Mic className="w-7 h-7 sm:w-8 sm:h-8" />}
           </button>
 
           <div className="text-center space-y-1">
@@ -218,7 +218,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
             {transcript && (
               <button
                 onClick={() => setTranscript('')}
-                className="text-[10px] text-slate-500 hover:text-slate-300"
+                className="text-[10px] text-slate-500 hover:text-slate-300 cursor-pointer"
               >
                 Clear
               </button>
@@ -231,7 +231,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
 
         {/* Voice Assistant Reply Box */}
         {response && (
-          <div className="p-4 bg-teal-950/60 rounded-2xl border border-teal-700/50 space-y-2 text-xs">
+          <div className="p-3.5 sm:p-4 bg-teal-950/60 rounded-2xl border border-teal-700/50 space-y-2 text-xs">
             <div className="flex items-center justify-between text-teal-300 font-bold">
               <span className="flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-teal-400" />
@@ -240,7 +240,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
 
               <button
                 onClick={() => (isSpeaking ? stopSpeaking() : speakText(response))}
-                className="p-1.5 bg-teal-900/80 hover:bg-teal-800 text-teal-200 rounded-lg transition-all flex items-center space-x-1 text-[11px]"
+                className="p-1.5 bg-teal-900/80 hover:bg-teal-800 text-teal-200 rounded-lg transition-all flex items-center space-x-1 text-[11px] cursor-pointer"
               >
                 {isSpeaking ? <VolumeX className="w-3.5 h-3.5 text-amber-400" /> : <Volume2 className="w-3.5 h-3.5" />}
                 <span>{isSpeaking ? 'Mute Audio' : 'Play Audio'}</span>
@@ -251,15 +251,15 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
-          <span className="text-[10px] text-slate-500">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-800 text-xs">
+          <span className="text-[10px] text-slate-500 text-center sm:text-left">
             Powered by MoSJE NLP & Web Speech Engine
           </span>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium"
+              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium cursor-pointer"
             >
               Close
             </button>
@@ -267,7 +267,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
             <button
               onClick={handleSendVoiceMessage}
               disabled={!transcript.trim() || isProcessing}
-              className="px-5 py-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-40 text-white font-bold rounded-xl shadow-lg flex items-center space-x-1.5"
+              className="px-4 sm:px-5 py-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-40 text-white font-bold rounded-xl shadow-lg flex items-center space-x-1.5 cursor-pointer"
             >
               <Send className="w-3.5 h-3.5" />
               <span>{isProcessing ? 'Processing...' : 'Send Voice Message'}</span>

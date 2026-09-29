@@ -43,7 +43,7 @@ export const AdminDashboard: React.FC = () => {
     <div className="space-y-6">
       
       {/* Header */}
-      <div className="bg-navy-900 text-white p-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-slate-900 dark:bg-slate-950 text-white p-4 sm:p-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-slate-800">
         <div>
           <div className="flex items-center space-x-2 text-teal-400 text-xs font-semibold uppercase tracking-wider mb-1">
             <Building2 className="w-4 h-4" />
@@ -53,44 +53,44 @@ export const AdminDashboard: React.FC = () => {
           <p className="text-xs text-slate-300">Department of Social Justice & Empowerment (MoSJE)</p>
         </div>
 
-        <span className="text-xs font-mono bg-teal-900 text-teal-300 px-3 py-1.5 rounded-lg border border-teal-700">
+        <span className="text-xs font-mono bg-teal-900/60 text-teal-300 px-3 py-1.5 rounded-lg border border-teal-700">
           State-wide Analytics Hub
         </span>
       </div>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <div className="text-[11px] font-semibold text-slate-500 uppercase">Total Monitored Victims</div>
-          <div className="text-2xl font-extrabold text-slate-900 mt-1">{s.total_victims}</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Total Monitored Victims</div>
+          <div className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">{s.total_victims}</div>
           <div className="text-[10px] text-slate-400">Across 5 Districts</div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <div className="text-[11px] font-semibold text-slate-500 uppercase">High/Critical Risk</div>
-          <div className="text-2xl font-extrabold text-red-600 mt-1">{s.high_risk_count + s.critical_count}</div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">High/Critical Risk</div>
+          <div className="text-2xl font-extrabold text-red-600 dark:text-red-400 mt-1">{s.high_risk_count + s.critical_count}</div>
           <div className="text-[10px] text-red-500 font-semibold">Active Human Intervention</div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <div className="text-[11px] font-semibold text-slate-500 uppercase">Avg Intervention Response</div>
-          <div className="text-2xl font-extrabold text-teal-700 mt-1">{s.avg_response_time_hours} hrs</div>
-          <div className="text-[10px] text-emerald-600 font-semibold">Target &lt; 4.0 hrs</div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Avg Intervention Response</div>
+          <div className="text-2xl font-extrabold text-teal-700 dark:text-teal-400 mt-1">{s.avg_response_time_hours} hrs</div>
+          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">Target &lt; 4.0 hrs</div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <div className="text-[11px] font-semibold text-slate-500 uppercase">Intervention Completion</div>
-          <div className="text-2xl font-extrabold text-emerald-700 mt-1">{s.intervention_completion_rate}%</div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+          <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Intervention Completion</div>
+          <div className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400 mt-1">{s.intervention_completion_rate}%</div>
           <div className="text-[10px] text-slate-400">Human Approval Rate</div>
         </div>
       </div>
 
       {/* District Comparison Chart */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 transition-colors">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-sm text-slate-900">District-Level Monitored Victim & Risk Distribution</h3>
-            <p className="text-xs text-slate-500">Comparing active caseload and high-risk alerts by district</p>
+            <h3 className="font-bold text-sm text-slate-900 dark:text-white">District-Level Monitored Victim & Risk Distribution</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Comparing active caseload and high-risk alerts by district</p>
           </div>
         </div>
 

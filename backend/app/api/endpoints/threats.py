@@ -46,6 +46,10 @@ def report_threat(req: ThreatReportCreate):
 
     return {'status': 'success', 'threat_event': threat_obj}
 
+@router.get("")
+def get_all_threats():
+    return {'threats': db_service.threat_events, 'count': len(db_service.threat_events)}
+
 @router.get("/{victim_id}")
 def get_victim_threats(victim_id: str):
     threats = [t for t in db_service.threat_events if t['victim_id'] == victim_id]

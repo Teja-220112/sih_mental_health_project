@@ -44,6 +44,10 @@ def create_intervention(req: InterventionCreate):
 
     return {'status': 'success', 'intervention': inv_obj}
 
+@router.get("")
+def get_all_interventions():
+    return {'interventions': db_service.interventions, 'count': len(db_service.interventions)}
+
 @router.get("/{victim_id}")
 def get_victim_interventions(victim_id: str):
     invs = [i for i in db_service.interventions if i['victim_id'] == victim_id]

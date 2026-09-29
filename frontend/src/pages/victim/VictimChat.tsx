@@ -140,64 +140,62 @@ export const VictimChat: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[650px]">
+    <div className="max-w-3xl mx-auto bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-[calc(100vh-14rem)] min-h-[460px] max-h-[720px] transition-colors">
       
       {/* Header */}
-      <div className="bg-slate-900 text-white p-4 flex items-center justify-between border-b border-slate-800">
-        <div className="flex items-center space-x-3">
-          <div className="p-2.5 bg-teal-500/20 text-teal-400 rounded-xl border border-teal-500/30">
-            <HeartHandshake className="w-5 h-5" />
+      <div className="bg-slate-900 text-white p-3.5 sm:p-4 flex items-center justify-between border-b border-slate-800">
+        <div className="flex items-center space-x-2.5 sm:space-x-3">
+          <div className="p-2 sm:p-2.5 bg-teal-500/20 text-teal-400 rounded-xl border border-teal-500/30 shrink-0">
+            <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-sm text-white">Supportive Care Assistant</h3>
-            <p className="text-[11px] text-slate-400">Confidential, supportive listening and wellness companion</p>
+            <h3 className="font-bold text-xs sm:text-sm text-white">Supportive Care Assistant</h3>
+            <p className="text-[10px] sm:text-[11px] text-slate-400">Confidential listening &amp; guidance</p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-1.5 text-[11px] font-semibold bg-teal-950/80 text-teal-300 px-3 py-1 rounded-full border border-teal-800">
+        <div className="flex items-center space-x-1.5 text-[10px] sm:text-[11px] font-semibold bg-teal-950/80 text-teal-300 px-2.5 sm:px-3 py-1 rounded-full border border-teal-800 shrink-0">
           <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
-          <span>Confidential & Protected</span>
+          <span className="hidden xs:inline">Protected</span>
         </div>
       </div>
 
       {/* Safety Notice */}
-      <div className="bg-teal-50/80 px-4 py-2.5 border-b border-teal-100 text-[11px] text-teal-900 flex items-center justify-between">
-        <span className="flex items-center space-x-1.5">
-          <span>This assistant is here to listen and help you feel grounded. For immediate danger, always call <strong>112</strong> or <strong>181</strong>.</span>
-        </span>
+      <div className="bg-teal-50/80 dark:bg-teal-950/60 px-3 sm:px-4 py-2 border-b border-teal-100 dark:border-teal-900/60 text-[10px] sm:text-[11px] text-teal-900 dark:text-teal-200 flex items-center justify-between">
+        <span>This assistant is here to listen. For immediate emergency or physical danger, always call <strong>112</strong> or <strong>181</strong>.</span>
       </div>
 
       {/* Message List */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50/60">
+      <div className="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 sm:space-y-4 bg-slate-50/60 dark:bg-slate-950/40">
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`flex items-start space-x-2.5 ${
+            className={`flex items-start space-x-2 sm:space-x-2.5 ${
               msg.sender === 'victim' ? 'justify-end' : 'justify-start'
             }`}
           >
             {msg.sender !== 'victim' && (
-              <div className="w-8 h-8 rounded-full bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">
-                <Bot className="w-4 h-4" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">
+                <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             )}
 
             <div
-              className={`max-w-[78%] rounded-2xl p-3.5 text-xs leading-relaxed shadow-sm ${
+              className={`max-w-[85%] sm:max-w-[78%] rounded-2xl p-3 sm:p-3.5 text-xs leading-relaxed shadow-sm ${
                 msg.sender === 'victim'
                   ? 'bg-teal-700 text-white rounded-tr-none'
-                  : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none'
+                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-tl-none'
               }`}
             >
               <p>{msg.message_text}</p>
-              <div className={`text-[10px] mt-1.5 text-right ${msg.sender === 'victim' ? 'text-teal-200' : 'text-slate-400'}`}>
+              <div className={`text-[10px] mt-1.5 text-right ${msg.sender === 'victim' ? 'text-teal-200' : 'text-slate-400 dark:text-slate-500'}`}>
                 {msg.timestamp}
               </div>
             </div>
 
             {msg.sender === 'victim' && (
-              <div className="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">
-                <User className="w-4 h-4" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">
+                <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             )}
           </div>
@@ -214,14 +212,16 @@ export const VictimChat: React.FC = () => {
       </div>
 
       {/* Input Form */}
-      <form onSubmit={handleSend} className="p-3 bg-white border-t border-slate-200 flex items-center space-x-2">
+      <form onSubmit={handleSend} className="p-2.5 sm:p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center space-x-2">
         <input
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={isRecording ? "Listening to your voice... Speak now." : "Share your thoughts or concerns with your assistant..."}
-          className={`flex-1 px-4 py-2.5 border rounded-xl text-xs text-slate-900 focus:outline-none transition-all ${
-            isRecording ? 'bg-red-50 border-red-300 placeholder-red-400 font-medium' : 'bg-slate-50 border-slate-300 focus:border-teal-600'
+          className={`flex-1 px-3 sm:px-4 py-2 sm:py-2.5 border rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none transition-all ${
+            isRecording 
+              ? 'bg-red-50 dark:bg-red-950/50 border-red-300 dark:border-red-800 placeholder-red-400 font-medium' 
+              : 'bg-slate-50 dark:bg-slate-800 border-slate-300 dark:border-slate-700 focus:border-teal-600'
           }`}
         />
 
@@ -229,19 +229,19 @@ export const VictimChat: React.FC = () => {
           type="button"
           onClick={toggleSpeech}
           title={isRecording ? "Stop voice recording" : "Speak into microphone"}
-          className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+          className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
             isRecording
               ? 'bg-red-600 text-white border-red-700 animate-pulse shadow'
-              : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
-          {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4 text-teal-600" />}
+          {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4 text-teal-600 dark:text-teal-400" />}
         </button>
 
         <button
           type="submit"
           disabled={!inputText.trim() || isSending}
-          className="p-2.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white rounded-xl shadow transition-all cursor-pointer"
+          className="p-2 sm:p-2.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white rounded-xl shadow transition-all cursor-pointer"
         >
           <Send className="w-4 h-4" />
         </button>

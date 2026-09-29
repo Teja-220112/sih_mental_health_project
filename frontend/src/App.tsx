@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { ThemeProvider } from './lib/themeContext';
 import { AuthProvider, useAuth } from './lib/authContext';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
-import { DisclaimerBanner } from './components/layout/DisclaimerBanner';
 import { VoiceAssistantModal } from './components/ui/VoiceAssistantModal';
 import { Login } from './pages/Login';
 
@@ -17,13 +17,14 @@ import { PoliceDashboard } from './pages/police/PoliceDashboard';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { MLMonitoring } from './pages/admin/MLMonitoring';
 import { AuditLogs } from './pages/admin/AuditLogs';
-import { Privacy } from './pages/Privacy';
+import { VictimThreatReport } from './pages/victim/VictimThreatReport';
 
 const MainContent: React.FC = () => {
   const { user, role } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [selectedVictimId, setSelectedVictimId] = useState<string | null>(null);
   const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState<boolean>(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
 
   if (!user) {
     return <Login />;
@@ -35,8 +36,7 @@ const MainContent: React.FC = () => {
       case 'checkin':
         return (
           <CheckinWizard
-            onComplete={(res) => {
-              alert("Your wellbeing check-in has been securely recorded. Our support coordinators and protection officers are actively monitoring your safety.");
+            onComplete={(_res) => {
               setActiveTab('dashboard');
             }}
             onCancel={() => setActiveTab('dashboard')}
@@ -46,46 +46,11 @@ const MainContent: React.FC = () => {
         return <VictimChat />;
       case 'threat':
         return (
-          <div className="max-w-xl mx-auto bg-white p-6 rounded-2xl border border-slate-200 shadow-xl space-y-4">
-            <h3 className="font-bold text-base text-slate-900">Report Threat or Intimidation Event</h3>
-            <p className="text-xs text-slate-500">Submitting a threat report instantly notifies your counsellor and triggers a district protection review.</p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Threat report submitted! High-priority protection alert created.");
-                setActiveTab('dashboard');
-              }}
-              className="space-y-3 text-xs"
-            >
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Threat Type</label>
-                <select className="w-full p-2.5 border border-slate-300 rounded-lg">
-                  <option>Witness Coercion / Verbal Threat</option>
-                  <option>Physical Harassment / Stalking</option>
-                  <option>Property Damage Threat</option>
-                  <option>Social Pressure to Withdraw Case</option>
-                </select>
-              </div>
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Severity (1 to 5)</label>
-                <select className="w-full p-2.5 border border-slate-300 rounded-lg">
-                  <option value="5">5 — Critical Immediate Threat</option>
-                  <option value="4">4 — Severe Coercion</option>
-                  <option value="3">3 — Moderate Pressure</option>
-                </select>
-              </div>
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Description of Incident</label>
-                <textarea rows={3} placeholder="Describe when, where, and what occurred..." className="w-full p-2.5 border border-slate-300 rounded-lg" />
-              </div>
-              <button type="submit" className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl shadow">
-                Submit Immediate Threat Report
-              </button>
-            </form>
-          </div>
+          <VictimThreatReport
+            onBack={() => setActiveTab('dashboard')}
+            onSuccess={() => setActiveTab('dashboard')}
+          />
         );
-      case 'privacy':
-        return <Privacy />;
       case 'dashboard':
       default:
         return (
@@ -108,30 +73,25 @@ const MainContent: React.FC = () => {
       );
     }
 
-    switch (activeTab) {
-      case 'alerts':
-      case 'victims':
-      case 'interventions':
-      case 'dashboard':
-      default:
-        return (
-          <CounsellorDashboard
-            onSelectVictim={(vid) => setSelectedVictimId(vid)}
-          />
-        );
-    }
+    return (
+      <CounsellorDashboard
+        activeTab={activeTab}
+        onNavigate={(tab) => setActiveTab(tab)}
+        onSelectVictim={(vid) => setSelectedVictimId(vid)}
+      />
+    );
   };
 
   const renderDistrictPage = () => {
-    return <DistrictDashboard />;
+    return <DistrictDashboard activeTab={activeTab} onNavigate={(tab) => setActiveTab(tab)} />;
   };
 
   const renderProtectionPage = () => {
-    return <ProtectionDashboard />;
+    return <ProtectionDashboard activeTab={activeTab} onNavigate={(tab) => setActiveTab(tab)} />;
   };
 
   const renderPolicePage = () => {
-    return <PoliceDashboard />;
+    return <PoliceDashboard activeTab={activeTab} onNavigate={(tab) => setActiveTab(tab)} />;
   };
 
   const renderAdminPage = () => {
@@ -147,19 +107,25 @@ const MainContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <div className="sticky top-0 z-50 bg-slate-900 shadow-md">
-        <DisclaimerBanner />
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
+      <div className="sticky top-0 z-50">
         <Navbar
           onQuickCheckin={() => setActiveTab('checkin')}
           onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
+          isMobileNavOpen={isMobileNavOpen}
+          onToggleMobileNav={() => setIsMobileNavOpen((prev) => !prev)}
         />
       </div>
 
-      <div className="flex-1 flex max-w-7xl w-full mx-auto">
-        <Sidebar activeTab={activeTab} setActiveTab={(tab) => { setSelectedVictimId(null); setActiveTab(tab); }} />
+      <div className="flex-1 flex max-w-7xl w-full mx-auto min-w-0">
+        <Sidebar 
+          activeTab={activeTab} 
+          setActiveTab={(tab) => { setSelectedVictimId(null); setActiveTab(tab); }}
+          isMobileOpen={isMobileNavOpen}
+          onCloseMobile={() => setIsMobileNavOpen(false)}
+        />
 
-        <main className="flex-1 p-6 overflow-x-hidden">
+        <main className="flex-1 p-3.5 sm:p-5 md:p-6 pb-24 lg:pb-6 overflow-x-hidden min-w-0">
           {role === 'victim' && renderVictimPage()}
           {role === 'police_officer' && renderPolicePage()}
           {role === 'counsellor' && renderCounsellorPage()}
@@ -179,9 +145,11 @@ const MainContent: React.FC = () => {
 
 export function App() {
   return (
-    <AuthProvider>
-      <MainContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <MainContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

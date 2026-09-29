@@ -152,42 +152,42 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200">
+    <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-8 shadow-xl border border-slate-200 dark:border-slate-800 transition-colors">
       
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <HeartHandshake className="w-5 h-5 text-teal-600" />
+          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <HeartHandshake className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             <span>Periodic Mental Health Check-in</span>
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">Step {step + 1} of {questions.length + 2}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Step {step + 1} of {questions.length + 2}</p>
         </div>
-        <button onClick={onCancel} className="text-xs text-slate-400 hover:text-slate-600">
+        <button onClick={onCancel} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
           Cancel
         </button>
       </div>
 
       {/* STEP 0: Safety Gate Question */}
       {step === 0 && (
-        <div className="py-6 space-y-6">
-          <div className="p-4 bg-red-50 border border-red-200 rounded-xl space-y-3">
-            <div className="flex items-center space-x-2 text-red-800 font-bold text-sm">
-              <ShieldAlert className="w-5 h-5 text-red-600 shrink-0" />
+        <div className="py-5 sm:py-6 space-y-5 sm:space-y-6">
+          <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-xl space-y-3">
+            <div className="flex items-center space-x-2 text-red-800 dark:text-red-300 font-bold text-sm">
+              <ShieldAlert className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
               <span>Immediate Safety Check Gate</span>
             </div>
-            <p className="text-xs text-red-900 leading-relaxed font-medium">
+            <p className="text-xs text-red-900 dark:text-red-200 leading-relaxed font-medium">
               Do you currently feel that you or someone close to you may be in immediate physical danger right now?
             </p>
 
-            <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => handleImmediateDangerToggle(true)}
-                className={`py-3 px-4 rounded-xl border font-bold text-xs transition-all flex items-center justify-center space-x-2 ${
+                className={`py-3 px-4 rounded-xl border font-bold text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer ${
                   answers.immediate_danger
                     ? 'bg-red-600 text-white border-red-700 shadow-md ring-2 ring-red-400'
-                    : 'bg-white text-red-700 border-red-300 hover:bg-red-100'
+                    : 'bg-white dark:bg-slate-800 text-red-700 dark:text-red-300 border-red-300 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-950/60'
                 }`}
               >
                 <AlertTriangle className="w-4 h-4" />
@@ -197,10 +197,10 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
               <button
                 type="button"
                 onClick={() => handleImmediateDangerToggle(false)}
-                className={`py-3 px-4 rounded-xl border font-bold text-xs transition-all flex items-center justify-center space-x-2 ${
+                className={`py-3 px-4 rounded-xl border font-bold text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer ${
                   !answers.immediate_danger
                     ? 'bg-emerald-600 text-white border-emerald-700 shadow-md'
-                    : 'bg-white text-emerald-800 border-emerald-300 hover:bg-emerald-50'
+                    : 'bg-white dark:bg-slate-800 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/60'
                 }`}
               >
                 <CheckCircle2 className="w-4 h-4" />
@@ -210,7 +210,7 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
           </div>
 
           {answers.immediate_danger && (
-            <div className="p-3 bg-red-100 text-red-900 rounded-lg text-xs font-semibold">
+            <div className="p-3 bg-red-100 dark:bg-red-950/60 text-red-900 dark:text-red-200 rounded-xl text-xs font-semibold border border-red-200 dark:border-red-800">
               ⚠️ Selecting YES triggers an instant CRITICAL safety alert to your counsellor and district officer. Emergency services helpline (112) is also available.
             </div>
           )}
@@ -218,7 +218,7 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
           <div className="flex justify-end pt-4">
             <button
               onClick={() => setStep(1)}
-              className="px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs rounded-xl shadow flex items-center space-x-2"
+              className="w-full sm:w-auto px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs rounded-xl shadow flex items-center justify-center space-x-2 cursor-pointer"
             >
               <span>Continue to Questionnaire</span>
               <ArrowRight className="w-4 h-4" />
@@ -229,18 +229,18 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
 
       {/* STEPS 1..9: Questions */}
       {step >= 1 && step <= questions.length && (
-        <div className="py-6 space-y-6">
+        <div className="py-5 sm:py-6 space-y-5 sm:space-y-6">
           {(() => {
             const q = questions[step - 1];
             const currentVal = (answers as any)[q.key];
 
             return (
               <div className="space-y-4">
-                <div className="inline-block px-2.5 py-0.5 bg-teal-50 text-teal-700 rounded text-[11px] font-semibold uppercase tracking-wider">
+                <div className="inline-block px-2.5 py-0.5 bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 rounded text-[11px] font-semibold uppercase tracking-wider border border-teal-200 dark:border-teal-800">
                   Domain: {q.domain}
                 </div>
                 
-                <h3 className="text-base font-semibold text-slate-900">{q.label}</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white leading-snug">{q.label}</h3>
 
                 <div className="space-y-2">
                   {scaleOptions.map((opt) => (
@@ -248,14 +248,14 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
                       key={opt.value}
                       type="button"
                       onClick={() => setAnswers((prev) => ({ ...prev, [q.key]: opt.value }))}
-                      className={`w-full p-3.5 rounded-xl border text-left text-xs font-medium transition-all flex items-center justify-between ${
+                      className={`w-full p-3 sm:p-3.5 rounded-xl border text-left text-xs font-medium transition-all flex items-center justify-between cursor-pointer ${
                         currentVal === opt.value
-                          ? 'border-teal-600 bg-teal-50 text-teal-900 font-bold shadow-sm'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                          ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/70 text-teal-900 dark:text-teal-200 font-bold shadow-xs ring-1 ring-teal-500'
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600'
                       }`}
                     >
                       <span>{opt.label}</span>
-                      {currentVal === opt.value && <CheckCircle2 className="w-4 h-4 text-teal-600" />}
+                      {currentVal === opt.value && <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />}
                     </button>
                   ))}
                 </div>
@@ -263,10 +263,10 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
             );
           })()}
 
-          <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-5 sm:pt-6 border-t border-slate-100 dark:border-slate-800">
             <button
               onClick={() => setStep((s) => s - 1)}
-              className="px-4 py-2 border border-slate-300 text-slate-600 text-xs font-medium rounded-xl hover:bg-slate-50 flex items-center space-x-1"
+              className="px-3.5 sm:px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center space-x-1 cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Previous</span>
@@ -274,7 +274,7 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
 
             <button
               onClick={() => setStep((s) => s + 1)}
-              className="px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs rounded-xl shadow flex items-center space-x-2"
+              className="px-4 sm:px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs rounded-xl shadow flex items-center space-x-2 cursor-pointer"
             >
               <span>Next Question</span>
               <ArrowRight className="w-4 h-4" />
@@ -285,11 +285,11 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
 
       {/* STEP 10: Free Text & Voice Note */}
       {step === questions.length + 1 && (
-        <div className="py-6 space-y-6">
-          <h3 className="text-base font-semibold text-slate-900">
+        <div className="py-5 sm:py-6 space-y-5 sm:space-y-6">
+          <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white">
             10. Is there anything else you would like to tell your counsellor today?
           </h3>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             You can type your thoughts or record an optional voice note. NLP sentiment and safety models will analyze text signals.
           </p>
 
@@ -299,35 +299,35 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
               value={answers.free_text_response}
               onChange={(e) => setAnswers((prev) => ({ ...prev, free_text_response: e.target.value }))}
               placeholder="Type your feelings, concerns, or recent events here..."
-              className="w-full p-3.5 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-teal-600"
+              className="w-full p-3 sm:p-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-teal-600"
             />
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 type="button"
                 onClick={toggleRecording}
-                className={`px-4 py-2 rounded-xl border text-xs font-semibold flex items-center space-x-2 transition-all ${
+                className={`px-4 py-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center space-x-2 transition-all cursor-pointer ${
                   isRecording
                     ? 'bg-red-600 text-white border-red-700 animate-pulse shadow-lg'
-                    : 'bg-teal-50 text-teal-800 border-teal-200 hover:bg-teal-100'
+                    : 'bg-teal-50 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border-teal-200 dark:border-teal-800 hover:bg-teal-100 dark:hover:bg-teal-900/60'
                 }`}
               >
-                {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4 text-teal-600" />}
+                {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4 text-teal-600 dark:text-teal-400" />}
                 <span>{isRecording ? 'Stop Recording' : 'Speak Voice Input (Real STT)'}</span>
               </button>
 
               {speechStatus && (
-                <span className="text-xs font-medium text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100">
+                <span className="text-xs font-medium text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 px-2.5 py-1 rounded-lg border border-teal-100 dark:border-teal-800 text-center sm:text-left">
                   {speechStatus}
                 </span>
               )}
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-5 sm:pt-6 border-t border-slate-100 dark:border-slate-800">
             <button
               onClick={() => setStep((s) => s - 1)}
-              className="px-4 py-2 border border-slate-300 text-slate-600 text-xs font-medium rounded-xl hover:bg-slate-50 flex items-center space-x-1"
+              className="px-3.5 sm:px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center space-x-1 cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Previous</span>
@@ -336,7 +336,7 @@ export const CheckinWizard: React.FC<CheckinWizardProps> = ({ onComplete, onCanc
             <button
               disabled={isSubmitting}
               onClick={handleSubmit}
-              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg flex items-center space-x-2"
+              className="px-4 sm:px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg flex items-center space-x-2 cursor-pointer"
             >
               {isSubmitting ? (
                 <span>Analyzing NLP & Calculating Score...</span>

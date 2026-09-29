@@ -21,7 +21,7 @@ def login(req: LoginRequest):
     if not ident:
         raise HTTPException(status_code=400, detail="Identifier or email required")
     
-    auth_result = db_service.authenticate_user(ident, req.password)
+    auth_result = db_service.authenticate_user(ident, req.password, req.role)
     if not auth_result:
         raise HTTPException(
             status_code=401,

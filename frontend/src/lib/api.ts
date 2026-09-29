@@ -53,10 +53,12 @@ export const api = {
   resolveAlert: (alertId: string) => fetchApi(`/alerts/${alertId}/resolve`, { method: 'POST' }),
   createIntervention: (payload: any) => fetchApi('/interventions', { method: 'POST', body: JSON.stringify(payload) }),
   getVictimInterventions: (victimId: string) => fetchApi(`/interventions/${victimId}`),
+  getAllInterventions: () => fetchApi('/interventions'),
 
   // Threats & Cases
   reportThreat: (payload: any) => fetchApi('/threats', { method: 'POST', body: JSON.stringify(payload) }),
   getVictimThreats: (victimId: string) => fetchApi(`/threats/${victimId}`),
+  getAllThreats: () => fetchApi('/threats'),
   getCases: () => fetchApi('/cases'),
 
   // Dashboard & ML
